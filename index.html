@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ro" data-theme="dark">
+<html lang="ro" data-theme="light">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -9,28 +9,28 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         :root {
-          /* Paletă mai industrială pentru site de scule */
-          --bg: #050608;
-          --bg1: #0b0d11;
-          --bg2: #111318;
-          --bg3: #181b22;
-          --bg4: #20242c;
-          --border: #2a2f39;
-          --border2: #363c48;
+          /* Paletă foarte luminoasă, industrială */
+          --bg: #f8fafc;
+          --bg1: #ffffff;
+          --bg2: #ffffff;
+          --bg3: #f1f5f9;
+          --bg4: #e2e8f0;
+          --border: #cfd6e6;
+          --border2: #b7c2db;
           --accent: #ff7a00;           /* portocaliu industrial */
-          --accent-dim: rgba(255,122,0,0.14);
-          --accent-glow: rgba(255,122,0,0.35);
-          --green: #27c46b;
-          --green-dim: rgba(39,196,107,0.14);
-          --red: #ff3b3b;
-          --red-dim: rgba(255,59,59,0.14);
-          --amber: #ffc600;
-          --amber-dim: rgba(255,198,0,0.16);
-          --violet: #7c5cff;
-          --violet-dim: rgba(124,92,255,0.16);
-          --text: #e6edf7;
-          --text2: #9aa4b8;
-          --text3: #616a7a;
+          --accent-dim: rgba(255,122,0,0.12);
+          --accent-glow: rgba(255,122,0,0.28);
+          --green: #1ba463;
+          --green-dim: rgba(27,164,99,0.12);
+          --red: #e53935;
+          --red-dim: rgba(229,57,53,0.12);
+          --amber: #f9a825;
+          --amber-dim: rgba(249,168,37,0.14);
+          --violet: #6d4cff;
+          --violet-dim: rgba(109,76,255,0.14);
+          --text: #202534;
+          --text2: #5b6478;
+          --text3: #8b94aa;
           --font: 'Outfit', sans-serif;
           --font-head: 'Syne', sans-serif;
           --font-mono: 'IBM Plex Mono', monospace;
@@ -40,34 +40,44 @@
           --shadow-accent: 0 0 24px rgba(0,229,255,0.15);
           --transition: 0.18s cubic-bezier(0.4,0,0.2,1);
         }
-        [data-theme="light"] {
-          --bg: #f0f4fa;
-          --bg1: #e8eef8;
-          --bg2: #ffffff;
-          --bg3: #f5f7fc;
-          --bg4: #eef1f8;
-          --border: #d0daea;
-          --border2: #bccce0;
-          --accent: #0070f3;
-          --accent-dim: rgba(0,112,243,0.1);
-          --accent-glow: rgba(0,112,243,0.25);
-          --green: #00994d;
-          --green-dim: rgba(0,153,77,0.1);
-          --red: #e0001e;
-          --red-dim: rgba(224,0,30,0.1);
-          --amber: #b06a00;
-          --amber-dim: rgba(176,106,0,0.1);
-          --violet: #6d28d9;
-          --violet-dim: rgba(109,40,217,0.1);
-          --text: #0f1c2e;
-          --text2: #4a607a;
-          --text3: #8aa0ba;
-          --shadow: 0 4px 24px rgba(0,0,0,0.1);
-          --shadow-accent: 0 0 24px rgba(0,112,243,0.12);
+        [data-theme="dark"] {
+          /* variantă închisă, dacă vrei să revii pe dark */
+          --bg: #050608;
+          --bg1: #0b0d11;
+          --bg2: #111318;
+          --bg3: #181b22;
+          --bg4: #20242c;
+          --border: #2a2f39;
+          --border2: #363c48;
+          --accent: #ff7a00;
+          --accent-dim: rgba(255,122,0,0.16);
+          --accent-glow: rgba(255,122,0,0.35);
+          --green: #27c46b;
+          --green-dim: rgba(39,196,107,0.16);
+          --red: #ff3b3b;
+          --red-dim: rgba(255,59,59,0.16);
+          --amber: #ffc600;
+          --amber-dim: rgba(255,198,0,0.18);
+          --violet: #7c5cff;
+          --violet-dim: rgba(124,92,255,0.18);
+          --text: #e6edf7;
+          --text2: #9aa4b8;
+          --text3: #616a7a;
+          --shadow: 0 4px 24px rgba(0,0,0,0.5);
+          --shadow-accent: 0 0 24px rgba(0,0,0,0.4);
         }
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
         html{scroll-behavior:smooth}
-        body{font-family:var(--font);background:radial-gradient(circle at top,#1b1f28 0,#050608 55%);color:var(--text);min-height:100vh;overflow-x:hidden;font-size:15px;line-height:1.6;padding:18px 10px;}
+        body{
+          font-family:var(--font);
+          background:linear-gradient(180deg,#ffffff 0,#f1f5f9 100%);
+          color:var(--text);
+          min-height:100vh;
+          overflow-x:hidden;
+          font-size:16px;
+          line-height:1.6;
+          padding:18px 14px;
+        }
         /* ─── SCROLLBAR ─── */
         ::-webkit-scrollbar{width:5px;height:5px}
         ::-webkit-scrollbar-track{background:var(--bg1)}
@@ -77,18 +87,19 @@
         #app{
           display:flex;
           min-height:calc(100vh - 36px);
-          max-width:1360px;
+          width:100%;
+          max-width:1480px;
           margin:0 auto;
           overflow:hidden;
-          border-radius:var(--radius-lg);
+          border-radius:12px;
           border:1px solid var(--border);
-          box-shadow:var(--shadow);
+          box-shadow:0 10px 35px rgba(15,23,42,0.18);
           background:var(--bg1);
         }
         #sidebar{width:240px;min-width:240px;background:var(--bg1);border-right:1px solid var(--border);display:flex;flex-direction:column;transition:width var(--transition);position:relative;z-index:100}
         #sidebar.collapsed{width:64px;min-width:64px}
         #main{flex:1;overflow:hidden;display:flex;flex-direction:column}
-        #topbar{background:var(--bg1);border-bottom:1px solid var(--border);padding:0 24px;height:60px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+        #topbar{background:var(--bg1);border-bottom:1px solid var(--border);padding:0 24px;height:64px;display:flex;align-items:center;gap:12px;flex-shrink:0}
         #content{flex:1;overflow-y:auto;padding:28px}
         /* ─── SIDEBAR ─── */
         .sidebar-logo{padding:16px 18px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);flex-shrink:0}
@@ -250,7 +261,7 @@
         }
         .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:199}
         /* ─── LOGIN ─── */
-        #login-screen{position:fixed;inset:0;background:radial-gradient(circle at top,#1b1f28 0,#050608 55%);display:flex;align-items:center;justify-content:center;z-index:500;flex-direction:column;padding:16px}
+        #login-screen{position:fixed;inset:0;background:linear-gradient(180deg,#ffffff 0,#f1f5f9 100%);display:flex;align-items:center;justify-content:center;z-index:500;flex-direction:column;padding:16px}
         .login-card{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:32px 28px;width:360px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,0.7)}
         .login-logo{text-align:center;margin-bottom:28px}
         .login-title{font-family:var(--font-head);font-size:26px;font-weight:800;margin-bottom:4px}
@@ -367,7 +378,7 @@
                     <div class="user-name" id="user-name-small">Admin</div>
                     <div class="user-role" id="user-role-small">admin</div>
                 </div>
-                <button onclick="logout()" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:4px" title="Logout">
+                <button onclick="logout()" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:4px" title="Deconectare">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                 </button>
             </div>
@@ -531,7 +542,7 @@
         users:'Administrare utilizatori',activity:'Jurnal activitate'
       }[page]||page;
       const content=document.getElementById('content');
-      content.innerHTML='<div style="color:var(--text3);padding:20px">Loading...</div>';
+      content.innerHTML='<div style="color:var(--text3);padding:20px">Se încarcă...</div>';
       closeSidebar();
       setTimeout(()=>{ PAGE_RENDERERS[page]&&PAGE_RENDERERS[page](); },10);
     }
@@ -599,7 +610,7 @@
     // ═══════════════════════════════════════════════════════════════════
     // HELPERS
     // ═══════════════════════════════════════════════════════════════════
-    function fmt(n, dec=2){ return (Math.round(n*(10**dec))/(10**dec)).toLocaleString('en',{minimumFractionDigits:dec,maximumFractionDigits:dec}); }
+    function fmt(n, dec=2){ return (Math.round(n*(10**dec))/(10**dec)).toLocaleString('ro-RO',{minimumFractionDigits:dec,maximumFractionDigits:dec}); }
     function fmtDate(d){ return d||'—'; }
     function stockColor(p){ if(p.stock===0)return 'red'; if(p.stock<=p.lowStockAlert)return 'amber'; return 'green'; }
     function stockPct(p){ const max=Math.max(p.stock*1.5,p.lowStockAlert*3,1); return Math.min(100,(p.stock/max)*100); }
@@ -776,26 +787,26 @@
             <input class="form-input" id="prod-search" style="padding-left:32px" placeholder="Caută după nume, cod, cod de bare..." value="" oninput="PAGE_RENDERERS.products()"/>
           </div>
           <select class="form-input" id="prod-cat" style="width:auto" onchange="PAGE_RENDERERS.products()">
-            <option value="">All Categories</option>
+            <option value="">Toate categoriile</option>
             ${categories.map(c=>`<option value="${c}">${c}</option>`).join('')}
           </select>
           <select class="form-input" id="prod-brand" style="width:auto" onchange="PAGE_RENDERERS.products()">
-            <option value="">All Brands</option>
+            <option value="">Toate mărcile</option>
             ${brands.map(b=>`<option value="${b}">${b}</option>`).join('')}
           </select>
           <select class="form-input" id="prod-sort" style="width:auto" onchange="PAGE_RENDERERS.products()">
-            <option value="name">Sort: Name</option>
-            <option value="stock">Sort: Stock</option>
-            <option value="value">Sort: Value</option>
-            <option value="price">Sort: Price</option>
+            <option value="name">Sortare: Nume</option>
+            <option value="stock">Sortare: Stoc</option>
+            <option value="value">Sortare: Valoare</option>
+            <option value="price">Sortare: Preț</option>
           </select>
-          <span style="font-size:12px;color:var(--text3)">${total} items</span>
+          <span style="font-size:12px;color:var(--text3)">${total} produse</span>
         </div>
         <div class="table-scroll">
           <table class="data-table">
-            <thead><tr><th>Product</th><th>Code</th><th>Category</th><th>Buy</th><th>Sell</th><th>Stock</th><th>Value</th><th>Actions</th></tr></thead>
+            <thead><tr><th>Produs</th><th>Cod</th><th>Categorie</th><th>Achiziție</th><th>Vânzare</th><th>Stoc</th><th>Valoare</th><th>Acțiuni</th></tr></thead>
             <tbody>
-              ${slice.length===0?`<tr><td colspan="8"><div class="empty-state"><h3>No products found</h3><p>Try adjusting your search or filters</p></div></td></tr>`
+              ${slice.length===0?`<tr><td colspan="8"><div class="empty-state"><h3>Produse negăsite</h3><p>Încearcă să modifici căutarea sau filtrele</p></div></td></tr>`
               :slice.map(p=>`
               <tr>
                 <td>
@@ -822,9 +833,9 @@
                 <td class="mono" style="color:var(--accent)">€${fmt(p.stock*p.buyPrice)}</td>
                 <td>
                   <div style="display:flex;gap:4px">
-                    <button class="btn btn-ghost btn-sm btn-icon" onclick="viewProduct(${p.id})" title="View">${svgIcon('eye')}</button>
-                    ${canEdit()?`<button class="btn btn-ghost btn-sm btn-icon" onclick="openProductModal(${p.id})" title="Edit">${svgIcon('edit')}</button>`:''}
-                    ${isAdmin()?`<button class="btn btn-danger btn-sm btn-icon" onclick="deleteProduct(${p.id})" title="Delete">${svgIcon('trash')}</button>`:''}
+                    <button class="btn btn-ghost btn-sm btn-icon" onclick="viewProduct(${p.id})" title="Vizualizare">${svgIcon('eye')}</button>
+                    ${canEdit()?`<button class="btn btn-ghost btn-sm btn-icon" onclick="openProductModal(${p.id})" title="Editare">${svgIcon('edit')}</button>`:''}
+                    ${isAdmin()?`<button class="btn btn-danger btn-sm btn-icon" onclick="deleteProduct(${p.id})" title="Șterge">${svgIcon('trash')}</button>`:''}
                   </div>
                 </td>
               </tr>`).join('')}
@@ -850,9 +861,9 @@
     }
 
     function openProductModal(id){
-      if(!canEdit()){ toast('No permission','error'); return; }
+      if(!canEdit()){ toast('Nu ai permisiune','error'); return; }
       const p = id ? getProduct(id) : null;
-      const title = p ? 'Edit Product' : 'Add New Product';
+      const title = p ? 'Editează produs' : 'Adaugă produs nou';
       openModal(`
       <div class="modal-head">
         <div class="stat-icon ${p?'accent':'green'}" style="width:36px;height:36px">${svgIcon(p?'edit':'plus')}</div>
@@ -861,42 +872,42 @@
       </div>
       <div class="modal-body">
         <div class="form-grid">
-          <div class="form-group"><label class="form-label">Product Name *</label><input class="form-input" id="pf-name" value="${p?p.name:''}" placeholder="e.g. Wireless Mouse"/></div>
-          <div class="form-group"><label class="form-label">Brand / Manufacturer *</label><input class="form-input" id="pf-brand" value="${p?p.brand:''}" placeholder="e.g. Logitech"/></div>
-          <div class="form-group"><label class="form-label">Product Code *</label><input class="form-input" id="pf-code" value="${p?p.code:''}" placeholder="e.g. LOG-WM100"/></div>
-          <div class="form-group"><label class="form-label">Barcode</label><input class="form-input" id="pf-barcode" value="${p?p.barcode:''}" placeholder="EAN/UPC barcode"/></div>
-          <div class="form-group"><label class="form-label">Category</label>
+          <div class="form-group"><label class="form-label">Nume produs *</label><input class="form-input" id="pf-name" value="${p?p.name:''}" placeholder="ex. Șurubelniță electrică"/></div>
+          <div class="form-group"><label class="form-label">Marcă / Producător *</label><input class="form-input" id="pf-brand" value="${p?p.brand:''}" placeholder="ex. Bosch"/></div>
+          <div class="form-group"><label class="form-label">Cod produs *</label><input class="form-input" id="pf-code" value="${p?p.code:''}" placeholder="ex. BOS-SC100"/></div>
+          <div class="form-group"><label class="form-label">Cod de bare</label><input class="form-input" id="pf-barcode" value="${p?p.barcode:''}" placeholder="Cod EAN/UPC"/></div>
+          <div class="form-group"><label class="form-label">Categorie</label>
             <select class="form-input" id="pf-cat">
               ${categories.map(c=>`<option value="${c}" ${p&&p.category===c?'selected':''}>${c}</option>`).join('')}
             </select>
           </div>
-          <div class="form-group"><label class="form-label">Unit of Measure</label>
+          <div class="form-group"><label class="form-label">Unitate de măsură</label>
             <select class="form-input" id="pf-unit">
               ${['pcs','kg','g','l','ml','m','box','pair'].map(u=>`<option value="${u}" ${p&&p.unit===u?'selected':''}>${u}</option>`).join('')}
             </select>
           </div>
-          <div class="form-group"><label class="form-label">Purchase Price (€)</label><input class="form-input" id="pf-buy" type="number" step="0.01" value="${p?p.buyPrice:''}" placeholder="0.00"/></div>
-          <div class="form-group"><label class="form-label">Selling Price (€)</label><input class="form-input" id="pf-sell" type="number" step="0.01" value="${p?p.sellPrice:''}" placeholder="0.00"/></div>
-          <div class="form-group"><label class="form-label">Stock Quantity</label><input class="form-input" id="pf-stock" type="number" value="${p?p.stock:0}" placeholder="0"/></div>
-          <div class="form-group"><label class="form-label">Low Stock Alert Threshold</label><input class="form-input" id="pf-alert" type="number" value="${p?p.lowStockAlert:10}" placeholder="10"/></div>
-          <div class="form-group full"><label class="form-label">Description</label><textarea class="form-input" id="pf-desc" placeholder="Product description...">${p?p.description:''}</textarea></div>
-          <div class="form-group full"><label class="form-label">Product Image</label>
+          <div class="form-group"><label class="form-label">Preț achiziție (€)</label><input class="form-input" id="pf-buy" type="number" step="0.01" value="${p?p.buyPrice:''}" placeholder="0.00"/></div>
+          <div class="form-group"><label class="form-label">Preț vânzare (€)</label><input class="form-input" id="pf-sell" type="number" step="0.01" value="${p?p.sellPrice:''}" placeholder="0.00"/></div>
+          <div class="form-group"><label class="form-label">Cantitate stoc</label><input class="form-input" id="pf-stock" type="number" value="${p?p.stock:0}" placeholder="0"/></div>
+          <div class="form-group"><label class="form-label">Prag alertă stoc mic</label><input class="form-input" id="pf-alert" type="number" value="${p?p.lowStockAlert:10}" placeholder="10"/></div>
+          <div class="form-group full"><label class="form-label">Descriere</label><textarea class="form-input" id="pf-desc" placeholder="Descriere produs...">${p?p.description:''}</textarea></div>
+          <div class="form-group full"><label class="form-label">Imagine produs</label>
             <div style="display:flex;align-items:center;gap:12px">
               <div id="pf-img-prev" style="width:60px;height:60px;background:var(--bg3);border-radius:8px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;color:var(--text3)">
                 ${p&&p.image?`<img src="${p.image}" style="width:100%;height:100%;object-fit:cover"/>`:'📷'}
               </div>
               <div>
                 <input type="file" id="pf-img" accept="image/*" style="display:none" onchange="previewImg(this)"/>
-                <button class="btn btn-ghost btn-sm" onclick="document.getElementById('pf-img').click()">Upload Image</button>
-                ${p&&p.image?`<button class="btn btn-danger btn-sm" onclick="document.getElementById('pf-img-prev').innerHTML='📷';window._clearImg=true" style="margin-left:6px">Remove</button>`:''}
+                <button class="btn btn-ghost btn-sm" onclick="document.getElementById('pf-img').click()">Încarcă imagine</button>
+                ${p&&p.image?`<button class="btn btn-danger btn-sm" onclick="document.getElementById('pf-img-prev').innerHTML='📷';window._clearImg=true" style="margin-left:6px">Elimină</button>`:''}
               </div>
             </div>
           </div>
         </div>
       </div>
       <div class="modal-foot">
-        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-primary" onclick="saveProduct(${p?p.id:'null'})">${svgIcon('plus')} ${p?'Save Changes':'Add Product'}</button>
+        <button class="btn btn-ghost" onclick="closeModal()">Anulează</button>
+        <button class="btn btn-primary" onclick="saveProduct(${p?p.id:'null'})">${svgIcon('plus')} ${p?'Salvează modificările':'Adaugă produs'}</button>
       </div>`);
     }
 
@@ -912,7 +923,7 @@
       const name=document.getElementById('pf-name').value.trim();
       const brand=document.getElementById('pf-brand').value.trim();
       const code=document.getElementById('pf-code').value.trim();
-      if(!name||!brand||!code){ toast('Name, brand and code are required','error'); return; }
+      if(!name||!brand||!code){ toast('Numele, marca și codul sunt obligatorii','error'); return; }
       const imgInput=document.getElementById('pf-img');
       const getImg=()=>new Promise(res=>{
         if(window._clearImg){window._clearImg=false;res(null);return;}
@@ -936,12 +947,12 @@
           const i=products.findIndex(p=>p.id===id);
           products[i]={...products[i],...data};
           logActivity('Product Updated',name);
-          toast('Product updated','success');
+          toast('Produs actualizat','success');
         } else {
           data.id=nextId('products');
           products.push(data);
           logActivity('Product Created',name);
-          toast('Product added','success');
+          toast('Produs adăugat','success');
         }
         persist(); closeModal(); PAGE_RENDERERS.products(); updateAlertBadge();
       });
@@ -949,7 +960,7 @@
 
     function deleteProduct(id){
       const p=getProduct(id);
-      if(!isAdmin()){toast('Admin only','error');return;}
+      if(!isAdmin()){toast('Doar administrator','error');return;}
       openModal(`
       <div class="modal-head"><div class="stat-icon red">${svgIcon('trash')}</div><h2>Delete Product</h2><button class="btn btn-ghost btn-sm btn-icon" onclick="closeModal()">✕</button></div>
       <div class="modal-body"><p style="color:var(--text2)">Are you sure you want to delete <strong style="color:var(--text)">${p?.name}</strong>? This action cannot be undone.</p></div>
@@ -962,7 +973,7 @@
       const p=getProduct(id);
       products=products.filter(x=>x.id!==id);
       logActivity('Product Deleted',p?.name||id);
-      toast('Product deleted','success');
+      toast('Produs șters','success');
       persist(); closeModal(); PAGE_RENDERERS.products(); updateAlertBadge();
     }
 
@@ -978,15 +989,15 @@
       </div>
       <div class="modal-body">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
-          ${[['Brand',p.brand],['Code',p.code],['Barcode',p.barcode||'—'],['Category',p.category],['Unit',p.unit],['Buy Price','€'+fmt(p.buyPrice)],['Sell Price','€'+fmt(p.sellPrice)],['Stock',p.stock+' '+p.unit],['Low Alert',p.lowStockAlert+' '+p.unit],['Value','€'+fmt(p.stock*p.buyPrice)],['Created',p.createdAt]].map(([l,v])=>`
+          ${[['Marcă',p.brand],['Cod',p.code],['Cod de bare',p.barcode||'—'],['Categorie',p.category],['Unitate',p.unit],['Preț achiziție','€'+fmt(p.buyPrice)],['Preț vânzare','€'+fmt(p.sellPrice)],['Stoc',p.stock+' '+p.unit],['Alertă minimă',p.lowStockAlert+' '+p.unit],['Valoare','€'+fmt(p.stock*p.buyPrice)],['Creat',p.createdAt]].map(([l,v])=>`
           <div style="background:var(--bg3);padding:10px 14px;border-radius:8px;border:1px solid var(--border)">
             <div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px">${l}</div>
             <div style="font-size:14px;font-weight:600">${v}</div>
           </div>`).join('')}
         </div>
         ${p.description?`<div style="background:var(--bg3);padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;color:var(--text2)">${p.description}</div>`:''}
-        <div style="font-family:var(--font-head);font-weight:700;font-size:13px;margin-bottom:10px">Recent Movements</div>
-        ${movs.length===0?`<div style="color:var(--text3);font-size:13px">No movements recorded</div>`
+        <div style="font-family:var(--font-head);font-weight:700;font-size:13px;margin-bottom:10px">Mișcări recente</div>
+        ${movs.length===0?`<div style="color:var(--text3);font-size:13px">Nu există mișcări înregistrate</div>`
         :movs.map(m=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
           <span class="badge ${m.type==='IN'?'green':m.type==='OUT'?'red':'amber'}">${m.type}</span>
           <span class="mono">${m.qty} ${p.unit}</span>
@@ -996,34 +1007,34 @@
         </div>`).join('')}
       </div>
       <div class="modal-foot">
-        ${canEdit()?`<button class="btn btn-ghost" onclick="closeModal();openAdjustModal(${id})">Adjust Stock</button>`:''}
-        <button class="btn btn-primary" onclick="closeModal()">Close</button>
+        ${canEdit()?`<button class="btn btn-ghost" onclick="closeModal();openAdjustModal(${id})">Ajustează stoc</button>`:''}
+        <button class="btn btn-primary" onclick="closeModal()">Închide</button>
       </div>`,'xl');
     }
 
     function openAdjustModal(id){
       const p=getProduct(id);
       openModal(`
-      <div class="modal-head"><div class="stat-icon amber">≈</div><h2>Adjust Stock — ${p?.name}</h2><button class="btn btn-ghost btn-sm btn-icon" onclick="closeModal()">✕</button></div>
+      <div class="modal-head"><div class="stat-icon amber">≈</div><h2>Ajustare stoc — ${p?.name}</h2><button class="btn btn-ghost btn-sm btn-icon" onclick="closeModal()">✕</button></div>
       <div class="modal-body">
         <div class="form-grid">
-          <div class="form-group"><label class="form-label">Operation Type</label>
+          <div class="form-group"><label class="form-label">Tip operațiune</label>
             <select class="form-input" id="adj-type">
-              <option value="IN">IN — Add Stock</option>
-              <option value="OUT">OUT — Remove Stock</option>
-              <option value="ADJUSTMENT">ADJUSTMENT — Set Exact</option>
+              <option value="IN">Intrare — Adaugă stoc</option>
+              <option value="OUT">Ieșire — Scade stoc</option>
+              <option value="ADJUSTMENT">Ajustare — Setează exact</option>
             </select>
           </div>
-          <div class="form-group"><label class="form-label">Quantity</label><input class="form-input" id="adj-qty" type="number" min="0" value="1"/></div>
-          <div class="form-group full"><label class="form-label">Note</label><input class="form-input" id="adj-note" placeholder="Reason for adjustment..."/></div>
+          <div class="form-group"><label class="form-label">Cantitate</label><input class="form-input" id="adj-qty" type="number" min="0" value="1"/></div>
+          <div class="form-group full"><label class="form-label">Notă</label><input class="form-input" id="adj-note" placeholder="Motivul ajustării..."/></div>
         </div>
         <div style="margin-top:14px;padding:10px 14px;background:var(--bg3);border-radius:8px;font-size:13px">
-          Current stock: <strong class="mono">${p?.stock} ${p?.unit}</strong>
+          Stoc curent: <strong class="mono">${p?.stock} ${p?.unit}</strong>
         </div>
       </div>
       <div class="modal-foot">
-        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-primary" onclick="saveAdjustment(${id})">Apply Adjustment</button>
+        <button class="btn btn-ghost" onclick="closeModal()">Anulează</button>
+        <button class="btn btn-primary" onclick="saveAdjustment(${id})">Aplică ajustarea</button>
       </div>`,'sm');
     }
 
@@ -1032,16 +1043,16 @@
       const type=document.getElementById('adj-type').value;
       const qty=parseInt(document.getElementById('adj-qty').value)||0;
       const note=document.getElementById('adj-note').value.trim();
-      if(qty<=0){toast('Quantity must be > 0','error');return;}
+      if(qty<=0){toast('Cantitatea trebuie să fie > 0','error');return;}
       let newStock=p.stock;
       if(type==='IN') newStock+=qty;
-      else if(type==='OUT'){ if(qty>p.stock){toast('Not enough stock','error');return;} newStock-=qty; }
+      else if(type==='OUT'){ if(qty>p.stock){toast('Stoc insuficient','error');return;} newStock-=qty; }
       else newStock=qty;
       p.stock=newStock;
       const mov={id:nextId('movements'),productId:id,type,qty,date:new Date().toISOString().slice(0,10),user:currentUser.username,note};
       movements.push(mov);
       logActivity('Stock Adjusted',`${p.name} ${type} ${qty}`);
-      toast(`Stock updated: ${newStock} ${p.unit}`,'success');
+      toast(`Stoc actualizat: ${newStock} ${p.unit}`,'success');
       persist(); closeModal(); PAGE_RENDERERS.products(); updateAlertBadge();
     }
 
@@ -1051,37 +1062,37 @@
     let recepItems = [];
 
     PAGE_RENDERERS.reception = function(){
-      if(!canEdit()){ document.getElementById('content').innerHTML=`<div class="empty-state"><h3>Access Denied</h3><p>You need employee or admin role.</p></div>`; return; }
+      if(!canEdit()){ document.getElementById('content').innerHTML=`<div class="empty-state"><h3>Acces refuzat</h3><p>Ai nevoie de rol de operator sau administrator.</p></div>`; return; }
       recepItems = [];
       document.getElementById('content').innerHTML = `
       <div class="section-head">
-        <h1>New Goods Reception</h1>
+        <h1>Recepție marfă nouă</h1>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
         <div>
           <div class="table-wrap" style="margin-bottom:16px">
-            <div class="table-header"><div class="table-title">Invoice Details</div></div>
+            <div class="table-header"><div class="table-title">Detalii factură</div></div>
             <div style="padding:20px">
               <div class="form-grid">
-                <div class="form-group"><label class="form-label">Supplier *</label>
+                <div class="form-group"><label class="form-label">Furnizor *</label>
                   <select class="form-input" id="rec-sup">
                     ${suppliers.map(s=>`<option value="${s.name}">${s.name}</option>`).join('')}
                   </select>
                 </div>
-                <div class="form-group"><label class="form-label">Invoice Number *</label><input class="form-input" id="rec-no" placeholder="INV-2025-XXX"/></div>
-                <div class="form-group"><label class="form-label">Invoice Date *</label><input class="form-input" id="rec-date" type="date" value="${new Date().toISOString().slice(0,10)}"/></div>
-                <div class="form-group"><label class="form-label">Note</label><input class="form-input" id="rec-note" placeholder="Optional note..."/></div>
+                <div class="form-group"><label class="form-label">Număr factură *</label><input class="form-input" id="rec-no" placeholder="INV-2025-XXX"/></div>
+                <div class="form-group"><label class="form-label">Data facturii *</label><input class="form-input" id="rec-date" type="date" value="${new Date().toISOString().slice(0,10)}"/></div>
+                <div class="form-group"><label class="form-label">Notă</label><input class="form-input" id="rec-note" placeholder="Notă opțională..."/></div>
               </div>
             </div>
           </div>
           <!-- AI Invoice Scanner -->
           <div class="table-wrap">
-            <div class="table-header"><div class="table-title">📄 AI Invoice Scanner</div></div>
+            <div class="table-header"><div class="table-title">📄 Scaner facturi AI</div></div>
             <div style="padding:20px">
               <div class="upload-zone" id="upload-zone" onclick="document.getElementById('inv-file').click()">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                <div style="font-weight:600;margin-bottom:4px">Upload Invoice (PDF/Image)</div>
-                <div style="font-size:12px;color:var(--text3)">Click or drag & drop — AI will extract products</div>
+                <div style="font-weight:600;margin-bottom:4px">Încarcă factură (PDF/Imagine)</div>
+                <div style="font-size:12px;color:var(--text3)">Click sau trage & plasează — AI va extrage produsele</div>
               </div>
               <input type="file" id="inv-file" accept="image/*,.pdf" style="display:none" onchange="handleInvoiceUpload(this)"/>
               <div id="scan-status" style="margin-top:12px;display:none"></div>
@@ -1090,17 +1101,17 @@
         </div>
         <div class="table-wrap">
           <div class="table-header">
-            <div class="table-title">Invoice Items</div>
-            <button class="btn btn-primary btn-sm" onclick="addRecepItem()">${svgIcon('plus')} Add Item</button>
+            <div class="table-title">Articole factură</div>
+            <button class="btn btn-primary btn-sm" onclick="addRecepItem()">${svgIcon('plus')} Adaugă articol</button>
           </div>
           <div id="recep-items-list" style="padding:12px">
-            <div style="text-align:center;padding:24px;color:var(--text3);font-size:13px">No items added yet.<br/>Add existing products or scan invoice.</div>
+            <div style="text-align:center;padding:24px;color:var(--text3);font-size:13px">Nu s-au adăugat încă articole.<br/>Adaugă produse existente sau scanează factura.</div>
           </div>
           <div style="padding:12px 16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
             <div id="recep-total" style="font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--accent)">Total: €0.00</div>
             <button class="btn btn-success" onclick="saveReception()">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-              Save Reception
+              Salvează recepția
             </button>
           </div>
         </div>
@@ -1120,26 +1131,26 @@
     function renderRecepItems(){
       const el=document.getElementById('recep-items-list');
       if(!el)return;
-      if(recepItems.length===0){ el.innerHTML=`<div style="text-align:center;padding:24px;color:var(--text3);font-size:13px">No items added. Click "Add Item" or scan an invoice.</div>`; }
+      if(recepItems.length===0){ el.innerHTML=`<div style="text-align:center;padding:24px;color:var(--text3);font-size:13px">Nu s-au adăugat articole. Click „Adaugă articol” sau scanează o factură.</div>`; }
       else {
         el.innerHTML=recepItems.map((item,i)=>{
           const p=item.productId?getProduct(item.productId):null;
           return `<div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px">
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
               <span class="tag">#${i+1}</span>
-              <span style="font-weight:600;font-size:13px;flex:1">${item.name||p?.name||'New Product'}</span>
+              <span style="font-weight:600;font-size:13px;flex:1">${item.name||p?.name||'Produs nou'}</span>
               <button class="btn btn-danger btn-sm btn-icon" onclick="removeRecepItem(${i})">${svgIcon('trash')}</button>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-              <div><div class="form-label" style="margin-bottom:3px">Product</div>
+              <div><div class="form-label" style="margin-bottom:3px">Produs</div>
                 <select class="form-input" onchange="updateRecepItem(${i},'productId',this.value)" style="font-size:12px">
-                  <option value="">New product</option>
+                  <option value="">Produs nou</option>
                   ${products.map(p=>`<option value="${p.id}" ${item.productId==p.id?'selected':''}>${p.name}</option>`).join('')}
                 </select>
               </div>
-              <div><div class="form-label" style="margin-bottom:3px">Qty</div><input class="form-input" type="number" min="1" value="${item.qty||1}" oninput="updateRecepItem(${i},'qty',this.value);updateRecepTotal()" style="font-size:12px"/></div>
-              <div><div class="form-label" style="margin-bottom:3px">Unit Price (€)</div><input class="form-input" type="number" step="0.01" value="${item.price||0}" oninput="updateRecepItem(${i},'price',this.value);updateRecepTotal()" style="font-size:12px"/></div>
-              ${!item.productId?`<div class="full" style="grid-column:1/-1"><div class="form-label" style="margin-bottom:3px">Product Name (new)</div><input class="form-input" value="${item.name||''}" oninput="updateRecepItem(${i},'name',this.value)" placeholder="Enter product name..." style="font-size:12px"/></div>`:''}
+              <div><div class="form-label" style="margin-bottom:3px">Cant.</div><input class="form-input" type="number" min="1" value="${item.qty||1}" oninput="updateRecepItem(${i},'qty',this.value);updateRecepTotal()" style="font-size:12px"/></div>
+              <div><div class="form-label" style="margin-bottom:3px">Preț unitar (€)</div><input class="form-input" type="number" step="0.01" value="${item.price||0}" oninput="updateRecepItem(${i},'price',this.value);updateRecepTotal()" style="font-size:12px"/></div>
+              ${!item.productId?`<div class="full" style="grid-column:1/-1"><div class="form-label" style="margin-bottom:3px">Nume produs (nou)</div><input class="form-input" value="${item.name||''}" oninput="updateRecepItem(${i},'name',this.value)" placeholder="Introdu numele produsului..." style="font-size:12px"/></div>`:''}
             </div>
           </div>`;
         }).join('');
@@ -1165,7 +1176,7 @@
       const file=input.files[0]; if(!file)return;
       const st=document.getElementById('scan-status');
       st.style.display='block';
-      st.innerHTML=`<div style="display:flex;align-items:center;gap:8px;color:var(--accent);font-size:13px"><div style="width:16px;height:16px;border:2px solid var(--accent);border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite"></div>Analyzing invoice with AI...</div>
+      st.innerHTML=`<div style="display:flex;align-items:center;gap:8px;color:var(--accent);font-size:13px"><div style="width:16px;height:16px;border:2px solid var(--accent);border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite"></div>Se analizează factura cu AI...</div>
       <style>@keyframes spin{to{transform:rotate(360deg)}}</style>`;
       try {
         const b64=await toBase64(file);
@@ -1187,13 +1198,13 @@
             const matched=products.find(p=>p.name.toLowerCase().includes(item.name.toLowerCase()));
             recepItems.push({productId:matched?matched.id:'',name:item.name,qty:parseInt(item.qty)||1,price:parseFloat(item.price)||0});
           });
-          st.innerHTML=`<div style="color:var(--green);font-size:13px">✓ Extracted ${items.length} item(s) from invoice</div>`;
+          st.innerHTML=`<div style="color:var(--green);font-size:13px">✓ Extrase ${items.length} articol(e) din factură</div>`;
           renderRecepItems();
         } else {
-          st.innerHTML=`<div style="color:var(--amber);font-size:13px">⚠ No items detected. Please add manually.</div>`;
+          st.innerHTML=`<div style="color:var(--amber);font-size:13px">⚠ Nu s-au detectat articole. Adaugă manual.</div>`;
         }
       } catch(e){
-        st.innerHTML=`<div style="color:var(--red);font-size:13px">✕ Scan failed. Please add items manually.</div>`;
+        st.innerHTML=`<div style="color:var(--red);font-size:13px">✕ Scanarea a eșuat. Adaugă articole manual.</div>`;
       }
     }
     function toBase64(file){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=e=>res(e.target.result.split(',')[1]); r.onerror=rej; r.readAsDataURL(file); }); }
@@ -1202,14 +1213,14 @@
       const sup=document.getElementById('rec-sup')?.value;
       const no=document.getElementById('rec-no')?.value.trim();
       const date=document.getElementById('rec-date')?.value;
-      if(!no||!date){ toast('Invoice number and date required','error'); return; }
-      if(recepItems.length===0){ toast('Add at least one item','error'); return; }
+      if(!no||!date){ toast('Numărul și data facturii sunt obligatorii','error'); return; }
+      if(recepItems.length===0){ toast('Adaugă cel puțin un articol','error'); return; }
       const items=[];
       let total=0;
       for(const item of recepItems){
         const qty=parseInt(item.qty)||0;
         const price=parseFloat(item.price)||0;
-        if(qty<=0){ toast('All quantities must be > 0','error'); return; }
+        if(qty<=0){ toast('Toate cantitățile trebuie să fie > 0','error'); return; }
         if(item.productId){
           const p=getProduct(item.productId);
           p.stock+=qty;
@@ -1225,7 +1236,7 @@
       }
       invoices.push({id:nextId('invoices'),supplier:sup,invoiceNo:no,date,items,total,status:'received',note:document.getElementById('rec-note')?.value||''});
       logActivity('Invoice Received',`${no} from ${sup}`);
-      toast(`Invoice ${no} saved. Stock updated!`,'success');
+      toast(`Factura ${no} salvată. Stoc actualizat!`,'success');
       persist(); updateAlertBadge(); navigate('invoices');
     }
 
@@ -1249,36 +1260,39 @@
 
       document.getElementById('content').innerHTML=`
       <div class="section-head">
-        <h1>Stock Movements</h1>
-        ${canEdit()?`<button class="btn btn-primary" onclick="openAdjustModal(null)">Manual Adjustment</button>`:''}
+        <h1>Mișcări de stoc</h1>
+        ${canEdit()?`<button class="btn btn-primary" onclick="openAdjustModal(null)">Ajustare manuală</button>`:''}
       </div>
       <div class="table-wrap">
         <div class="table-header">
           <select class="form-input" id="mov-type" style="width:auto" onchange="PAGE_RENDERERS.movements()">
-            <option value="">All Types</option>
+            <option value="">Toate tipurile</option>
             <option value="IN">IN</option><option value="OUT">OUT</option><option value="ADJUSTMENT">ADJUSTMENT</option>
           </select>
           <select class="form-input" id="mov-prod" style="width:auto" onchange="PAGE_RENDERERS.movements()">
-            <option value="">All Products</option>
+            <option value="">Toate produsele</option>
             ${products.map(p=>`<option value="${p.id}">${p.name}</option>`).join('')}
           </select>
-          <span style="margin-left:auto;font-size:12px;color:var(--text3)">${total} records</span>
+          <span style="margin-left:auto;font-size:12px;color:var(--text3)">${total} înregistrări</span>
         </div>
         <div class="table-scroll">
           <table class="data-table">
-            <thead><tr><th>Date</th><th>Product</th><th>Type</th><th>Qty</th><th>Stock After</th><th>User</th><th>Note</th></tr></thead>
+            <thead><tr><th>Dată</th><th>Produs</th><th>Tip</th><th>Cant.</th><th>Stoc după</th><th>Utilizator</th><th>Notă</th><th>Acțiuni</th></tr></thead>
             <tbody>
-              ${slice.length===0?`<tr><td colspan="7"><div class="empty-state"><h3>No movements</h3></div></td></tr>`
+              ${slice.length===0?`<tr><td colspan="8"><div class="empty-state"><h3>Nu există mișcări</h3></div></td></tr>`
               :slice.map(m=>{
                 const prod=getProduct(m.productId);
                 return `<tr>
                   <td class="mono" style="color:var(--text2);font-size:12px">${m.date}</td>
-                  <td><span style="font-weight:500">${prod?prod.name:'Deleted Product'}</span>${prod?`<br/><span style="font-size:11px;color:var(--text3)">${prod.code}</span>`:''}</td>
-                  <td><span class="badge ${m.type==='IN'?'green':m.type==='OUT'?'red':'amber'}">${m.type==='IN'?'↑ IN':m.type==='OUT'?'↓ OUT':'≈ ADJ'}</span></td>
+                  <td><span style="font-weight:500">${prod?prod.name:'Produs șters'}</span>${prod?`<br/><span style="font-size:11px;color:var(--text3)">${prod.code}</span>`:''}</td>
+                  <td><span class="badge ${m.type==='IN'?'green':m.type==='OUT'?'red':'amber'}">${m.type==='IN'?'↑ Intrare':m.type==='OUT'?'↓ Ieșire':'≈ Ajustare'}</span></td>
                   <td class="mono" style="font-size:14px;font-weight:600;color:${m.type==='IN'?'var(--green)':'var(--red)'}">${m.type==='IN'?'+':''}${m.type==='OUT'?'-':''}${m.qty}</td>
                   <td class="mono">${prod?prod.stock:'—'}</td>
                   <td><span class="tag">${m.user}</span></td>
                   <td style="color:var(--text2);font-size:12px">${m.note||'—'}</td>
+                  <td>
+                    ${canEdit()?`<button class="btn btn-ghost btn-sm" onclick="deleteMovement(${m.id})">${svgIcon('trash')}</button>`:''}
+                  </td>
                 </tr>`;
               }).join('')}
             </tbody>
@@ -1288,29 +1302,40 @@
       </div>`;
     };
 
+    function deleteMovement(id){
+      if(!confirm('Sigur vrei să ștergi această mișcare din istoric?\n(Notă: ștergerea nu modifică stocul, doar istoricul.)')) return;
+      const idx = movements.findIndex(m=>m.id===id);
+      if(idx===-1) return;
+      movements.splice(idx,1);
+      persist();
+      logActivity('Ștergere mișcare stoc',`Mișcare ID ${id} ștearsă din istoric`);
+      PAGE_RENDERERS.movements(movPage);
+      toast('Mișcare ștearsă din istoric','success');
+    }
+
     // ═══════════════════════════════════════════════════════════════════
     // PAGE: INVOICES
     // ═══════════════════════════════════════════════════════════════════
     PAGE_RENDERERS.invoices = function(){
       document.getElementById('content').innerHTML=`
       <div class="section-head">
-        <h1>Invoice History</h1>
-        ${canEdit()?`<button class="btn btn-primary" onclick="navigate('reception')">${svgIcon('plus')} New Reception</button>`:''}
+        <h1>Istoric facturi</h1>
+        ${canEdit()?`<button class="btn btn-primary" onclick="navigate('reception')">${svgIcon('plus')} Recepție nouă</button>`:''}
       </div>
       <div class="table-wrap">
         <div class="table-scroll">
           <table class="data-table">
-            <thead><tr><th>Invoice #</th><th>Supplier</th><th>Date</th><th>Items</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead>
+            <thead><tr><th>Factură #</th><th>Furnizor</th><th>Dată</th><th>Articole</th><th>Total</th><th>Status</th><th>Acțiuni</th></tr></thead>
             <tbody>
-              ${invoices.length===0?`<tr><td colspan="7"><div class="empty-state"><h3>No invoices yet</h3><p>Record your first goods reception</p></div></td></tr>`
+              ${invoices.length===0?`<tr><td colspan="7"><div class="empty-state"><h3>Nu există încă facturi</h3><p>Înregistrează prima recepție de marfă</p></div></td></tr>`
               :invoices.slice().reverse().map(inv=>`
               <tr>
                 <td class="mono" style="color:var(--accent)">${inv.invoiceNo}</td>
                 <td style="font-weight:500">${inv.supplier}</td>
                 <td class="mono" style="color:var(--text2)">${inv.date}</td>
-                <td class="mono">${inv.items.length} item(s)</td>
+                <td class="mono">${inv.items.length} articol(e)</td>
                 <td class="mono" style="color:var(--green);font-weight:600">€${fmt(inv.total)}</td>
-                <td><span class="badge green">${inv.status}</span></td>
+                <td><span class="badge green">${inv.status==='received'?'primit':inv.status}</span></td>
                 <td><button class="btn btn-ghost btn-sm btn-icon" onclick="viewInvoice(${inv.id})">${svgIcon('eye')}</button></td>
               </tr>`).join('')}
             </tbody>
@@ -1330,18 +1355,18 @@
       </div>
       <div class="modal-body">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px">
-          ${[['Supplier',inv.supplier],['Date',inv.date],['Status',inv.status],['Note',inv.note||'—']].map(([l,v])=>`
+          ${[['Furnizor',inv.supplier],['Dată',inv.date],['Status',inv.status==='received'?'Primit':inv.status],['Notă',inv.note||'—']].map(([l,v])=>`
           <div style="background:var(--bg3);padding:10px;border-radius:8px">
             <div style="font-size:10px;color:var(--text3);text-transform:uppercase;font-weight:600;margin-bottom:2px">${l}</div>
             <div style="font-size:13px;font-weight:600">${v}</div>
           </div>`).join('')}
         </div>
         <table class="data-table" style="border:1px solid var(--border);border-radius:8px;overflow:hidden">
-          <thead><tr><th>Product</th><th>Qty</th><th>Unit Price</th><th>Subtotal</th></tr></thead>
+          <thead><tr><th>Produs</th><th>Cant.</th><th>Preț unitar</th><th>Subtotal</th></tr></thead>
           <tbody>
             ${inv.items.map(item=>{const p=getProduct(item.productId);return`
             <tr>
-              <td style="font-weight:500">${p?p.name:'Deleted'}</td>
+              <td style="font-weight:500">${p?p.name:'Șters'}</td>
               <td class="mono">${item.qty}</td>
               <td class="mono">€${fmt(item.price)}</td>
               <td class="mono" style="color:var(--green)">€${fmt(item.qty*item.price)}</td>
@@ -1350,7 +1375,7 @@
           </tbody>
         </table>
       </div>
-      <div class="modal-foot"><button class="btn btn-primary" onclick="closeModal()">Close</button></div>`,'xl');
+      <div class="modal-foot"><button class="btn btn-primary" onclick="closeModal()">Închide</button></div>`,'xl');
     }
 
     // ═══════════════════════════════════════════════════════════════════
@@ -1359,8 +1384,8 @@
     PAGE_RENDERERS.suppliers = function(){
       document.getElementById('content').innerHTML=`
       <div class="section-head">
-        <h1>Suppliers</h1>
-        ${isAdmin()?`<button class="btn btn-primary" onclick="openSupplierModal()">${svgIcon('plus')} Add Supplier</button>`:''}
+        <h1>Furnizori</h1>
+        ${isAdmin()?`<button class="btn btn-primary" onclick="openSupplierModal()">${svgIcon('plus')} Adaugă furnizor</button>`:''}
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px">
         ${suppliers.map(s=>`
@@ -1369,7 +1394,7 @@
             <div style="width:44px;height:44px;background:var(--accent-dim);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-weight:800;font-size:18px;color:var(--accent)">${s.name[0]}</div>
             <div>
               <div style="font-weight:700;font-size:15px">${s.name}</div>
-              <div style="font-size:11px;color:var(--text3)">${invoices.filter(i=>i.supplier===s.name).length} invoices</div>
+              <div style="font-size:11px;color:var(--text3)">${invoices.filter(i=>i.supplier===s.name).length} facturi</div>
             </div>
             ${isAdmin()?`<div style="margin-left:auto;display:flex;gap:4px">
               <button class="btn btn-ghost btn-sm btn-icon" onclick="openSupplierModal(${s.id})">${svgIcon('edit')}</button>
@@ -1387,39 +1412,39 @@
               <span>📍</span><span>${s.address||'—'}</span>
             </div>
             <div style="display:flex;gap:8px;font-size:12px;color:var(--text2);margin-top:4px">
-              <span>💰</span><span>Total spend: €${fmt(invoices.filter(i=>i.supplier===s.name).reduce((s,i)=>s+i.total,0))}</span>
+              <span>💰</span><span>Total cheltuit: €${fmt(invoices.filter(i=>i.supplier===s.name).reduce((s,i)=>s+i.total,0))}</span>
             </div>
           </div>
         </div>`).join('')}
-        ${suppliers.length===0?`<div class="empty-state"><h3>No suppliers yet</h3></div>`:''}
+        ${suppliers.length===0?`<div class="empty-state"><h3>Nu există încă furnizori</h3></div>`:''}
       </div>`;
     };
 
     function openSupplierModal(id){
       const s=id?suppliers.find(x=>x.id===id):null;
       openModal(`
-      <div class="modal-head"><h2>${s?'Edit':'Add'} Supplier</h2><button class="btn btn-ghost btn-sm btn-icon" onclick="closeModal()">✕</button></div>
+      <div class="modal-head"><h2>${s?'Editează':'Adaugă'} furnizor</h2><button class="btn btn-ghost btn-sm btn-icon" onclick="closeModal()">✕</button></div>
       <div class="modal-body">
         <div class="form-grid">
-          <div class="form-group full"><label class="form-label">Company Name *</label><input class="form-input" id="sf-name" value="${s?s.name:''}" placeholder="Company name"/></div>
-          <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="sf-contact" value="${s?s.contact:''}" placeholder="email@company.com"/></div>
-          <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="sf-phone" value="${s?s.phone:''}" placeholder="+40 7XX XXX XXX"/></div>
-          <div class="form-group full"><label class="form-label">Address</label><input class="form-input" id="sf-addr" value="${s?s.address||'':''}" placeholder="Full address"/></div>
+          <div class="form-group full"><label class="form-label">Denumire firmă *</label><input class="form-input" id="sf-name" value="${s?s.name:''}" placeholder="Denumire firmă"/></div>
+          <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="sf-contact" value="${s?s.contact:''}" placeholder="email@firma.ro"/></div>
+          <div class="form-group"><label class="form-label">Telefon</label><input class="form-input" id="sf-phone" value="${s?s.phone:''}" placeholder="+40 7XX XXX XXX"/></div>
+          <div class="form-group full"><label class="form-label">Adresă</label><input class="form-input" id="sf-addr" value="${s?s.address||'':''}" placeholder="Adresă completă"/></div>
         </div>
       </div>
       <div class="modal-foot">
-        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-primary" onclick="saveSupplier(${s?s.id:'null'})">Save</button>
+        <button class="btn btn-ghost" onclick="closeModal()">Anulează</button>
+        <button class="btn btn-primary" onclick="saveSupplier(${s?s.id:'null'})">Salvează</button>
       </div>`,'sm');
     }
     function saveSupplier(id){
       const name=document.getElementById('sf-name').value.trim();
-      if(!name){toast('Name required','error');return;}
+      if(!name){toast('Numele este obligatoriu','error');return;}
       const data={name,contact:document.getElementById('sf-contact').value.trim(),phone:document.getElementById('sf-phone').value.trim(),address:document.getElementById('sf-addr').value.trim()};
       if(id){const i=suppliers.findIndex(s=>s.id===id);suppliers[i]={...suppliers[i],...data};}
       else{data.id=nextId('suppliers');suppliers.push(data);}
       logActivity(id?'Supplier Updated':'Supplier Added',name);
-      toast(id?'Supplier updated':'Supplier added','success');
+      toast(id?'Furnizor actualizat':'Furnizor adăugat','success');
       persist();closeModal();PAGE_RENDERERS.suppliers();
     }
     function deleteSupplier(id){
@@ -1427,7 +1452,7 @@
       const s=suppliers.find(x=>x.id===id);
       suppliers=suppliers.filter(x=>x.id!==id);
       logActivity('Supplier Deleted',s?.name||id);
-      toast('Supplier removed','success');
+      toast('Furnizor eliminat','success');
       persist();PAGE_RENDERERS.suppliers();
     }
 
@@ -1436,34 +1461,34 @@
     // ═══════════════════════════════════════════════════════════════════
     PAGE_RENDERERS.scanner = function(){
       document.getElementById('content').innerHTML=`
-      <div class="section-head"><h1>Barcode Scanner</h1></div>
+      <div class="section-head"><h1>Scanner coduri de bare</h1></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
         <div>
           <div class="table-wrap" style="margin-bottom:16px">
-            <div class="table-header"><div class="table-title">🔍 Scan or Enter Barcode</div></div>
+            <div class="table-header"><div class="table-title">🔍 Scanează sau introdu codul</div></div>
             <div style="padding:20px">
               <div class="scanner-wrap">
                 <div class="scanner-line"></div>
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 12px;display:block;opacity:0.4"><rect x="3" y="7" width="4" height="10"/><rect x="8.5" y="7" width="2" height="10"/><rect x="12" y="7" width="3" height="10"/><rect x="16.5" y="7" width="1.5" height="10"/><rect x="19" y="7" width="2" height="10"/><path d="M1 5h22M1 19h22"/></svg>
-                <div style="font-size:13px;color:var(--text2);margin-bottom:8px">Point barcode scanner or enter code manually</div>
-                <div style="font-size:11px;color:var(--text3)">USB barcode scanners work automatically (they act as keyboard input)</div>
+                <div style="font-size:13px;color:var(--text2);margin-bottom:8px">Poziționează scanerul sau introdu codul manual</div>
+                <div style="font-size:11px;color:var(--text3)">Scanerele USB funcționează automat (se comportă ca tastatură)</div>
               </div>
               <div class="scanner-input-area">
-                <input class="form-input" id="scan-input" placeholder="Scan or type barcode..." autofocus oninput="scannerLookup(this.value)" style="flex:1"/>
-                <button class="btn btn-primary" onclick="scannerLookup(document.getElementById('scan-input').value)">Search</button>
+                <input class="form-input" id="scan-input" placeholder="Scanează sau tastează codul..." autofocus oninput="scannerLookup(this.value)" style="flex:1"/>
+                <button class="btn btn-primary" onclick="scannerLookup(document.getElementById('scan-input').value)">Caută</button>
               </div>
-              <div style="margin-top:8px;font-size:11px;color:var(--text3)">Tip: Connect a USB barcode scanner — it types automatically when you scan.</div>
+              <div style="margin-top:8px;font-size:11px;color:var(--text3)">Sfat: Conectează un scaner USB — tastează automat la scanare.</div>
             </div>
           </div>
           <div class="table-wrap">
-            <div class="table-header"><div class="table-title">📷 Camera Scan</div></div>
+            <div class="table-header"><div class="table-title">📷 Scanare cameră</div></div>
             <div style="padding:20px;text-align:center">
               <div id="cam-area">
                 <button class="btn btn-primary" onclick="startCamera()" style="margin-bottom:12px">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                  Start Camera
+                  Pornește camera
                 </button>
-                <div style="font-size:12px;color:var(--text3)">Use your phone camera to scan barcodes</div>
+                <div style="font-size:12px;color:var(--text3)">Folosește camera telefonului pentru a scana coduri</div>
               </div>
               <video id="scan-video" style="display:none;width:100%;max-width:300px;border-radius:8px;border:2px solid var(--accent)"></video>
               <canvas id="scan-canvas" style="display:none"></canvas>
@@ -1472,10 +1497,10 @@
           </div>
         </div>
         <div class="table-wrap">
-          <div class="table-header"><div class="table-title">Product Found</div></div>
+          <div class="table-header"><div class="table-title">Produs găsit</div></div>
           <div id="scanner-result" style="padding:24px;text-align:center;color:var(--text3)">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 12px;opacity:0.3"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <div>Scan a barcode to find a product</div>
+            <div>Scanează un cod pentru a găsi produsul</div>
           </div>
         </div>
       </div>`;
@@ -1501,7 +1526,7 @@
               </div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
-              ${[['Category',p.category],['Unit',p.unit],['Buy Price','€'+fmt(p.buyPrice)],['Sell Price','€'+fmt(p.sellPrice)]].map(([l,v])=>`
+              ${[['Categorie',p.category],['Unitate',p.unit],['Preț achiziție','€'+fmt(p.buyPrice)],['Preț vânzare','€'+fmt(p.sellPrice)]].map(([l,v])=>`
               <div style="background:var(--bg3);padding:10px;border-radius:8px">
                 <div style="font-size:10px;color:var(--text3);text-transform:uppercase;font-weight:600">${l}</div>
                 <div style="font-size:14px;font-weight:600">${v}</div>
@@ -1509,19 +1534,19 @@
             </div>
             <div style="background:${p.stock===0?'var(--red-dim)':p.stock<=p.lowStockAlert?'var(--amber-dim)':'var(--green-dim)'};border:1px solid ${p.stock===0?'var(--red)':p.stock<=p.lowStockAlert?'var(--amber)':'var(--green)'};padding:12px 16px;border-radius:10px;margin-bottom:16px;text-align:center">
               <div style="font-family:var(--font-head);font-size:32px;font-weight:800;color:${p.stock===0?'var(--red)':p.stock<=p.lowStockAlert?'var(--amber)':'var(--green)'}">${p.stock}</div>
-              <div style="font-size:12px;color:var(--text2)">${p.unit} in stock</div>
+              <div style="font-size:12px;color:var(--text2)">${p.unit} în stoc</div>
             </div>
             ${canEdit()?`<div style="display:flex;gap:8px">
-              <button class="btn btn-success" style="flex:1" onclick="quickStock(${p.id},'IN')">+ Add Stock</button>
-              <button class="btn btn-danger" style="flex:1" onclick="quickStock(${p.id},'OUT')">- Remove Stock</button>
+              <button class="btn btn-success" style="flex:1" onclick="quickStock(${p.id},'IN')">+ Adaugă stoc</button>
+              <button class="btn btn-danger" style="flex:1" onclick="quickStock(${p.id},'OUT')">- Scade stoc</button>
             </div>`:''}
           </div>`;
         } else {
           el.innerHTML=`<div style="padding:24px;text-align:center">
             <div style="font-size:32px;margin-bottom:8px">🔍</div>
-            <div style="font-weight:600;color:var(--text)">No product found</div>
-            <div style="color:var(--text3);font-size:13px;margin-top:4px">Barcode: <span class="mono">${val}</span></div>
-            ${canEdit()?`<button class="btn btn-primary" style="margin-top:12px" onclick="openProductModal()">Create New Product</button>`:''}
+            <div style="font-weight:600;color:var(--text)">Produs negăsit</div>
+            <div style="color:var(--text3);font-size:13px;margin-top:4px">Cod: <span class="mono">${val}</span></div>
+            ${canEdit()?`<button class="btn btn-primary" style="margin-top:12px" onclick="openProductModal()">Creează produs nou</button>`:''}
           </div>`;
         }
       },300);
@@ -1530,25 +1555,25 @@
     function quickStock(id,type){
       const p=getProduct(id);
       openModal(`
-      <div class="modal-head"><h2>Quick ${type} — ${p?.name}</h2><button class="btn btn-ghost btn-sm btn-icon" onclick="closeModal()">✕</button></div>
+      <div class="modal-head"><h2>Rapid ${type==='IN'?'Intrare':'Ieșire'} — ${p?.name}</h2><button class="btn btn-ghost btn-sm btn-icon" onclick="closeModal()">✕</button></div>
       <div class="modal-body">
-        <div style="text-align:center;margin-bottom:16px;font-size:13px;color:var(--text2)">Current: <strong class="mono">${p?.stock} ${p?.unit}</strong></div>
-        <div class="form-group"><label class="form-label">Quantity</label><input class="form-input" id="qs-qty" type="number" min="1" value="1" style="text-align:center;font-size:20px;font-family:var(--font-mono)"/></div>
+        <div style="text-align:center;margin-bottom:16px;font-size:13px;color:var(--text2)">Curent: <strong class="mono">${p?.stock} ${p?.unit}</strong></div>
+        <div class="form-group"><label class="form-label">Cantitate</label><input class="form-input" id="qs-qty" type="number" min="1" value="1" style="text-align:center;font-size:20px;font-family:var(--font-mono)"/></div>
       </div>
       <div class="modal-foot">
-        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-primary" onclick="saveAdjustmentQuick(${id},'${type}')">Confirm ${type}</button>
+        <button class="btn btn-ghost" onclick="closeModal()">Anulează</button>
+        <button class="btn btn-primary" onclick="saveAdjustmentQuick(${id},'${type}')">Confirmă ${type==='IN'?'intrare':'ieșire'}</button>
       </div>`,'sm');
     }
     function saveAdjustmentQuick(id,type){
       const p=getProduct(id);
       const qty=parseInt(document.getElementById('qs-qty').value)||0;
-      if(qty<=0){toast('Qty must be > 0','error');return;}
-      if(type==='OUT'&&qty>p.stock){toast('Not enough stock','error');return;}
+      if(qty<=0){toast('Cantitatea trebuie să fie > 0','error');return;}
+      if(type==='OUT'&&qty>p.stock){toast('Stoc insuficient','error');return;}
       if(type==='IN') p.stock+=qty; else p.stock-=qty;
       movements.push({id:nextId('movements'),productId:id,type,qty,date:new Date().toISOString().slice(0,10),user:currentUser.username,note:'Quick scanner update'});
       logActivity('Quick '+type,`${p.name} ×${qty}`);
-      toast(`Stock updated: ${p.stock} ${p.unit}`,'success');
+      toast(`Stoc actualizat: ${p.stock} ${p.unit}`,'success');
       persist();closeModal();updateAlertBadge();
       scannerLookup(p.barcode||p.code);
     }
@@ -1557,19 +1582,19 @@
       const area=document.getElementById('cam-area');
       const video=document.getElementById('scan-video');
       if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){
-        area.innerHTML=`<button class="btn btn-danger" onclick="stopCamera()" style="margin-bottom:8px">Stop Camera</button>`;
+        area.innerHTML=`<button class="btn btn-danger" onclick="stopCamera()" style="margin-bottom:8px">Oprește camera</button>`;
         video.style.display='block';
         navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}).then(stream=>{
           video.srcObject=stream;video.play();
-          document.getElementById('cam-result').innerHTML='<div style="color:var(--text3);font-size:12px">Camera active — barcode detection requires a library integration</div>';
-        }).catch(()=>{ document.getElementById('cam-result').innerHTML='<div style="color:var(--red);font-size:12px">Camera access denied</div>'; });
-      } else { document.getElementById('cam-result').innerHTML='<div style="color:var(--red);font-size:12px">Camera not available</div>'; }
+          document.getElementById('cam-result').innerHTML='<div style="color:var(--text3);font-size:12px">Camera activă — detectarea codurilor necesită o bibliotecă</div>';
+        }).catch(()=>{ document.getElementById('cam-result').innerHTML='<div style="color:var(--red);font-size:12px">Accesul la cameră blocat</div>'; });
+      } else { document.getElementById('cam-result').innerHTML='<div style="color:var(--red);font-size:12px">Camera indisponibilă</div>'; }
     }
     function stopCamera(){
       const v=document.getElementById('scan-video');
       if(v.srcObject) v.srcObject.getTracks().forEach(t=>t.stop());
       v.style.display='none';
-      document.getElementById('cam-area').innerHTML=`<button class="btn btn-primary" onclick="startCamera()">Start Camera</button>`;
+      document.getElementById('cam-area').innerHTML=`<button class="btn btn-primary" onclick="startCamera()">Pornește camera</button>`;
     }
 
     // ═══════════════════════════════════════════════════════════════════
@@ -1581,49 +1606,49 @@
       const totalInv=invoices.reduce((s,i)=>s+i.total,0);
 
       document.getElementById('content').innerHTML=`
-      <div class="section-head"><h1>Reports & Export</h1></div>
+      <div class="section-head"><h1>Rapoarte și export</h1></div>
       <div class="stat-grid" style="margin-bottom:24px">
-        <div class="stat-card accent"><div class="stat-icon accent">€</div><div class="stat-val">€${fmt(totalCost)}</div><div class="stat-label">Total Inventory Cost</div></div>
-        <div class="stat-card green"><div class="stat-icon green">€</div><div class="stat-val">€${fmt(totalSell)}</div><div class="stat-label">Total Sell Value</div></div>
-        <div class="stat-card amber"><div class="stat-icon amber">📊</div><div class="stat-val">€${fmt(totalSell-totalCost)}</div><div class="stat-label">Potential Margin</div></div>
-        <div class="stat-card"><div class="stat-icon violet">📄</div><div class="stat-val">€${fmt(totalInv)}</div><div class="stat-label">Total Purchased</div></div>
+        <div class="stat-card accent"><div class="stat-icon accent">€</div><div class="stat-val">€${fmt(totalCost)}</div><div class="stat-label">Cost total inventar</div></div>
+        <div class="stat-card green"><div class="stat-icon green">€</div><div class="stat-val">€${fmt(totalSell)}</div><div class="stat-label">Valoare totală vânzare</div></div>
+        <div class="stat-card amber"><div class="stat-icon amber">📊</div><div class="stat-val">€${fmt(totalSell-totalCost)}</div><div class="stat-label">Marjă potențială</div></div>
+        <div class="stat-card"><div class="stat-icon violet">📄</div><div class="stat-val">€${fmt(totalInv)}</div><div class="stat-label">Total achiziții</div></div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-        <div class="table-wrap"><div class="table-header"><div class="table-title">📦 Inventory Report</div></div>
+        <div class="table-wrap"><div class="table-header"><div class="table-title">📦 Raport inventar</div></div>
           <div style="padding:20px;display:flex;flex-direction:column;gap:10px">
-            <p style="font-size:13px;color:var(--text2)">Complete product list with current stock, values and details.</p>
+            <p style="font-size:13px;color:var(--text2)">Listă completă produse cu stoc, valori și detalii.</p>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
               <button class="btn btn-success" onclick="exportExcel('inventory')">${svgIcon('download')} Export Excel</button>
               <button class="btn btn-ghost" onclick="exportCSV('inventory')">${svgIcon('download')} Export CSV</button>
-              <button class="btn btn-ghost" onclick="printReport('inventory')">${svgIcon('download')} Print / PDF</button>
+              <button class="btn btn-ghost" onclick="printReport('inventory')">${svgIcon('download')} Printare / PDF</button>
             </div>
           </div>
         </div>
-        <div class="table-wrap"><div class="table-header"><div class="table-title">📄 Invoices Report</div></div>
+        <div class="table-wrap"><div class="table-header"><div class="table-title">📄 Raport facturi</div></div>
           <div style="padding:20px;display:flex;flex-direction:column;gap:10px">
-            <p style="font-size:13px;color:var(--text2)">All goods receipts, suppliers, and invoice totals.</p>
+            <p style="font-size:13px;color:var(--text2)">Toate recepțiile, furnizorii și totalurile facturilor.</p>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
               <button class="btn btn-success" onclick="exportExcel('invoices')">${svgIcon('download')} Export Excel</button>
               <button class="btn btn-ghost" onclick="exportCSV('invoices')">${svgIcon('download')} Export CSV</button>
-              <button class="btn btn-ghost" onclick="printReport('invoices')">${svgIcon('download')} Print / PDF</button>
+              <button class="btn btn-ghost" onclick="printReport('invoices')">${svgIcon('download')} Printare / PDF</button>
             </div>
           </div>
         </div>
-        <div class="table-wrap"><div class="table-header"><div class="table-title">📈 Movements Report</div></div>
+        <div class="table-wrap"><div class="table-header"><div class="table-title">📈 Raport mișcări</div></div>
           <div style="padding:20px;display:flex;flex-direction:column;gap:10px">
-            <p style="font-size:13px;color:var(--text2)">Full stock movement history — IN, OUT, and adjustments.</p>
+            <p style="font-size:13px;color:var(--text2)">Istoric complet mișcări stoc — intrări, ieșiri și ajustări.</p>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
               <button class="btn btn-success" onclick="exportExcel('movements')">${svgIcon('download')} Export Excel</button>
               <button class="btn btn-ghost" onclick="exportCSV('movements')">${svgIcon('download')} Export CSV</button>
             </div>
           </div>
         </div>
-        <div class="table-wrap"><div class="table-header"><div class="table-title">💾 Backup & Restore</div></div>
+        <div class="table-wrap"><div class="table-header"><div class="table-title">💾 Backup și restaurare</div></div>
           <div style="padding:20px;display:flex;flex-direction:column;gap:10px">
-            <p style="font-size:13px;color:var(--text2)">Export or import full system data backup.</p>
+            <p style="font-size:13px;color:var(--text2)">Exportă sau importă backup complet al sistemului.</p>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <button class="btn btn-primary" onclick="backupData()">${svgIcon('download')} Download Backup</button>
-              <button class="btn btn-ghost" onclick="document.getElementById('restore-file').click()">↑ Restore Backup</button>
+              <button class="btn btn-primary" onclick="backupData()">${svgIcon('download')} Descarcă backup</button>
+              <button class="btn btn-ghost" onclick="document.getElementById('restore-file').click()">↑ Restaurează backup</button>
               <input type="file" id="restore-file" accept=".json" style="display:none" onchange="restoreData(this)"/>
             </div>
           </div>
@@ -1647,7 +1672,7 @@
       const wb=XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb,ws,title);
       XLSX.writeFile(wb,`${title.replace(/ /g,'_')}_${new Date().toISOString().slice(0,10)}.xlsx`);
-      toast('Excel exported!','success');
+      toast('Excel exportat!','success');
       logActivity('Export',title+' Excel');
     }
 
@@ -1663,18 +1688,18 @@
       const csv=[headers,...rows].map(r=>r.map(v=>`"${v}"`).join(',')).join('\n');
       const a=document.createElement('a'); a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
       a.download=`${type}_${new Date().toISOString().slice(0,10)}.csv`; a.click();
-      toast('CSV exported!','success');
+      toast('CSV exportat!','success');
     }
 
     function printReport(type){
-      let html='<html><head><title>Report</title><style>body{font-family:sans-serif;font-size:12px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ccc;padding:6px;text-align:left}th{background:#eee;font-weight:bold}</style></head><body>';
+      let html='<html><head><title>Raport</title><style>body{font-family:sans-serif;font-size:12px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ccc;padding:6px;text-align:left}th{background:#eee;font-weight:bold}</style></head><body>';
       if(type==='inventory'){
-        html+=`<h2>Inventory Report — ${new Date().toLocaleDateString()}</h2><table><tr>${['Name','Brand','Code','Category','Buy','Sell','Stock','Value'].map(h=>`<th>${h}</th>`).join('')}</tr>`;
+        html+=`<h2>Raport inventar — ${new Date().toLocaleDateString('ro-RO')}</h2><table><tr>${['Nume','Marcă','Cod','Categorie','Achiziție','Vânzare','Stoc','Valoare'].map(h=>`<th>${h}</th>`).join('')}</tr>`;
         html+=products.map(p=>`<tr><td>${p.name}</td><td>${p.brand}</td><td>${p.code}</td><td>${p.category}</td><td>€${fmt(p.buyPrice)}</td><td>€${fmt(p.sellPrice)}</td><td>${p.stock} ${p.unit}</td><td>€${fmt(p.stock*p.buyPrice)}</td></tr>`).join('');
-        html+=`<tr><td colspan="7" style="text-align:right;font-weight:bold">TOTAL VALUE</td><td>€${fmt(products.reduce((s,p)=>s+p.stock*p.buyPrice,0))}</td></tr>`;
+        html+=`<tr><td colspan="7" style="text-align:right;font-weight:bold">VALOARE TOTALĂ</td><td>€${fmt(products.reduce((s,p)=>s+p.stock*p.buyPrice,0))}</td></tr>`;
       } else {
-        html+=`<h2>Invoices Report — ${new Date().toLocaleDateString()}</h2><table><tr>${['Invoice #','Supplier','Date','Total','Status'].map(h=>`<th>${h}</th>`).join('')}</tr>`;
-        html+=invoices.map(i=>`<tr><td>${i.invoiceNo}</td><td>${i.supplier}</td><td>${i.date}</td><td>€${fmt(i.total)}</td><td>${i.status}</td></tr>`).join('');
+        html+=`<h2>Raport facturi — ${new Date().toLocaleDateString('ro-RO')}</h2><table><tr>${['Factură #','Furnizor','Dată','Total','Status'].map(h=>`<th>${h}</th>`).join('')}</tr>`;
+        html+=invoices.map(i=>`<tr><td>${i.invoiceNo}</td><td>${i.supplier}</td><td>${i.date}</td><td>€${fmt(i.total)}</td><td>${i.status==='received'?'Primit':i.status}</td></tr>`).join('');
       }
       html+='</table></body></html>';
       const w=window.open('','_blank'); w.document.write(html); w.document.close(); w.print();
@@ -1684,7 +1709,7 @@
       const backup={products,categories,suppliers,movements,invoices,activityLog,idCounters,exportDate:new Date().toISOString()};
       const a=document.createElement('a'); a.href='data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(backup,null,2));
       a.download=`stockcommand_backup_${new Date().toISOString().slice(0,10)}.json`; a.click();
-      toast('Backup downloaded!','success');
+      toast('Backup descărcat!','success');
       logActivity('Backup','Data exported');
     }
     function restoreData(input){
@@ -1700,8 +1725,8 @@
           if(d.activityLog){activityLog=d.activityLog;saveState('activityLog',activityLog);}
           if(d.idCounters){idCounters=d.idCounters;saveState('idCounters',idCounters);}
           logActivity('Restore','Data restored from backup');
-          toast('Backup restored!','success'); updateAlertBadge(); PAGE_RENDERERS.reports();
-        }catch(err){ toast('Invalid backup file','error'); }
+          toast('Backup restaurat!','success'); updateAlertBadge(); PAGE_RENDERERS.reports();
+        }catch(err){ toast('Fișier backup invalid','error'); }
       }; r.readAsText(f);
     }
 
@@ -1712,27 +1737,27 @@
       const low=getLowStock();
       document.getElementById('content').innerHTML=`
       <div class="section-head">
-        <h1>Low Stock Alerts</h1>
-        <span class="badge red">${low.length} items</span>
+        <h1>Alerte stoc mic</h1>
+        <span class="badge red">${low.length} produse</span>
       </div>
       ${low.length===0?`<div class="table-wrap"><div style="padding:40px;text-align:center">
         <div style="font-size:48px;margin-bottom:12px">✅</div>
-        <div style="font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--green)">All stock levels are healthy!</div>
-        <div style="color:var(--text3);font-size:13px;margin-top:4px">No products below their alert thresholds</div>
+        <div style="font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--green)">Toate stocurile sunt în regulă!</div>
+        <div style="color:var(--text3);font-size:13px;margin-top:4px">Niciun produs sub pragul de alertă</div>
       </div></div>`
       :`<div class="table-wrap">
         <div class="table-scroll">
           <table class="data-table">
-            <thead><tr><th>Product</th><th>Category</th><th>Current Stock</th><th>Alert Level</th><th>Status</th><th>Value at Risk</th>${canEdit()?'<th>Action</th>':''}</tr></thead>
+            <thead><tr><th>Produs</th><th>Categorie</th><th>Stoc curent</th><th>Nivel alertă</th><th>Status</th><th>Valoare la risc</th>${canEdit()?'<th>Acțiune</th>':''}</tr></thead>
             <tbody>
               ${low.map(p=>`<tr>
                 <td><div style="font-weight:600">${p.name}</div><div style="font-size:11px;color:var(--text3)">${p.brand} — ${p.code}</div></td>
                 <td><span class="badge ${categoryColor(p.category)}">${p.category}</span></td>
                 <td><span class="badge ${stockColor(p)}" style="font-size:13px">${p.stock} ${p.unit}</span></td>
                 <td class="mono">${p.lowStockAlert} ${p.unit}</td>
-                <td><span class="badge ${p.stock===0?'red':'amber'}">${p.stock===0?'OUT OF STOCK':'LOW STOCK'}</span></td>
+                <td><span class="badge ${p.stock===0?'red':'amber'}">${p.stock===0?'STOC EPUIZAT':'STOC MIC'}</span></td>
                 <td class="mono" style="color:var(--red)">€${fmt(p.lowStockAlert*p.buyPrice)}</td>
-                ${canEdit()?`<td><button class="btn btn-success btn-sm" onclick="openAdjustModal(${p.id})">Restock</button></td>`:''}
+                ${canEdit()?`<td><button class="btn btn-success btn-sm" onclick="openAdjustModal(${p.id})">Reaprovizionare</button></td>`:''}
               </tr>`).join('')}
             </tbody>
           </table>
@@ -1871,15 +1896,15 @@
       document.getElementById('content').innerHTML=`
       <div class="section-head">
         <h1>Activity Log</h1>
-        <span class="badge gray">${total} records</span>
-        ${isAdmin()?`<button class="btn btn-danger btn-sm" onclick="if(confirm('Clear all logs?')){activityLog=[];persist();PAGE_RENDERERS.activity()}">Clear Log</button>`:''}
+        <span class="badge gray">${total} înregistrări</span>
+        ${isAdmin()?`<button class="btn btn-danger btn-sm" onclick="if(confirm('Ștergi tot jurnalul?')){activityLog=[];persist();PAGE_RENDERERS.activity()}">Șterge jurnal</button>`:''}
       </div>
       <div class="table-wrap">
         <div class="table-scroll">
           <table class="data-table">
-            <thead><tr><th>Date/Time</th><th>User</th><th>Action</th><th>Detail</th></tr></thead>
+            <thead><tr><th>Dată/Ora</th><th>Utilizator</th><th>Acțiune</th><th>Detaliu</th></tr></thead>
             <tbody>
-              ${slice.length===0?`<tr><td colspan="4"><div class="empty-state"><h3>No activity recorded</h3></div></td></tr>`
+              ${slice.length===0?`<tr><td colspan="4"><div class="empty-state"><h3>Nu există activitate înregistrată</h3></div></td></tr>`
               :slice.map(a=>`<tr>
                 <td class="mono" style="color:var(--text3);font-size:12px">${a.date}</td>
                 <td><span class="tag">${a.user}</span></td>
@@ -1898,20 +1923,20 @@
     // ═══════════════════════════════════════════════════════════════════
     function openCategoryManager(){
       openModal(`
-      <div class="modal-head"><h2>Manage Categories</h2><button class="btn btn-ghost btn-sm btn-icon" onclick="closeModal()">✕</button></div>
+      <div class="modal-head"><h2>Administrare categorii</h2><button class="btn btn-ghost btn-sm btn-icon" onclick="closeModal()">✕</button></div>
       <div class="modal-body" id="cat-list">
         ${categories.map((c,i)=>`<div style="display:flex;gap:8px;margin-bottom:8px">
           <input class="form-input" value="${c}" style="flex:1" id="cat-${i}"/>
           <button class="btn btn-danger btn-sm" onclick="removeCategory(${i})">${svgIcon('trash')}</button>
         </div>`).join('')}
         <div style="display:flex;gap:8px;margin-top:10px">
-          <input class="form-input" id="new-cat" placeholder="New category name..." style="flex:1"/>
-          <button class="btn btn-primary" onclick="addCategory()">Add</button>
+          <input class="form-input" id="new-cat" placeholder="Nume categorie nouă..." style="flex:1"/>
+          <button class="btn btn-primary" onclick="addCategory()">Adaugă</button>
         </div>
       </div>
       <div class="modal-foot">
-        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-primary" onclick="saveCategories()">Save</button>
+        <button class="btn btn-ghost" onclick="closeModal()">Anulează</button>
+        <button class="btn btn-primary" onclick="saveCategories()">Salvează</button>
       </div>`);
     }
     function addCategory(){
@@ -1924,7 +1949,7 @@
     function saveCategories(){
       const inputs=document.querySelectorAll('[id^="cat-"]');
       inputs.forEach((el,i)=>{ if(el.value.trim()) categories[i]=el.value.trim(); });
-      persist();toast('Categories saved','success');closeModal();
+      persist();toast('Categorii salvate','success');closeModal();
     }
 
     // ═══════════════════════════════════════════════════════════════════
