@@ -1,35 +1,36 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="ro" data-theme="dark">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>StockCommand — Warehouse Intelligence</title>
+    <title>StockCommand — Gestiune Stoc Scule</title>
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         :root {
-          --bg: #060810;
-          --bg1: #0c0f1a;
-          --bg2: #111827;
-          --bg3: #1a2235;
-          --bg4: #1e2a40;
-          --border: #1e2d45;
-          --border2: #243352;
-          --accent: #00e5ff;
-          --accent-dim: rgba(0,229,255,0.12);
-          --accent-glow: rgba(0,229,255,0.35);
-          --green: #00e096;
-          --green-dim: rgba(0,224,150,0.12);
-          --red: #ff4560;
-          --red-dim: rgba(255,69,96,0.12);
-          --amber: #ffb300;
-          --amber-dim: rgba(255,179,0,0.12);
-          --violet: #8b5cf6;
-          --violet-dim: rgba(139,92,246,0.12);
-          --text: #e2eaf5;
-          --text2: #8ca0bc;
-          --text3: #4d637d;
+          /* Paletă mai industrială pentru site de scule */
+          --bg: #050608;
+          --bg1: #0b0d11;
+          --bg2: #111318;
+          --bg3: #181b22;
+          --bg4: #20242c;
+          --border: #2a2f39;
+          --border2: #363c48;
+          --accent: #ff7a00;           /* portocaliu industrial */
+          --accent-dim: rgba(255,122,0,0.14);
+          --accent-glow: rgba(255,122,0,0.35);
+          --green: #27c46b;
+          --green-dim: rgba(39,196,107,0.14);
+          --red: #ff3b3b;
+          --red-dim: rgba(255,59,59,0.14);
+          --amber: #ffc600;
+          --amber-dim: rgba(255,198,0,0.16);
+          --violet: #7c5cff;
+          --violet-dim: rgba(124,92,255,0.16);
+          --text: #e6edf7;
+          --text2: #9aa4b8;
+          --text3: #616a7a;
           --font: 'Outfit', sans-serif;
           --font-head: 'Syne', sans-serif;
           --font-mono: 'IBM Plex Mono', monospace;
@@ -66,14 +67,24 @@
         }
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
         html{scroll-behavior:smooth}
-        body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;font-size:15px;line-height:1.6}
+        body{font-family:var(--font);background:radial-gradient(circle at top,#1b1f28 0,#050608 55%);color:var(--text);min-height:100vh;overflow-x:hidden;font-size:15px;line-height:1.6;padding:18px 10px;}
         /* ─── SCROLLBAR ─── */
         ::-webkit-scrollbar{width:5px;height:5px}
         ::-webkit-scrollbar-track{background:var(--bg1)}
         ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
         ::-webkit-scrollbar-thumb:hover{background:var(--accent)}
         /* ─── LAYOUT ─── */
-        #app{display:flex;height:100vh;overflow:hidden}
+        #app{
+          display:flex;
+          min-height:calc(100vh - 36px);
+          max-width:1360px;
+          margin:0 auto;
+          overflow:hidden;
+          border-radius:var(--radius-lg);
+          border:1px solid var(--border);
+          box-shadow:var(--shadow);
+          background:var(--bg1);
+        }
         #sidebar{width:240px;min-width:240px;background:var(--bg1);border-right:1px solid var(--border);display:flex;flex-direction:column;transition:width var(--transition);position:relative;z-index:100}
         #sidebar.collapsed{width:64px;min-width:64px}
         #main{flex:1;overflow:hidden;display:flex;flex-direction:column}
@@ -239,8 +250,8 @@
         }
         .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:199}
         /* ─── LOGIN ─── */
-        #login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:500;flex-direction:column}
-        .login-card{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:40px;width:360px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+        #login-screen{position:fixed;inset:0;background:radial-gradient(circle at top,#1b1f28 0,#050608 55%);display:flex;align-items:center;justify-content:center;z-index:500;flex-direction:column;padding:16px}
+        .login-card{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:32px 28px;width:360px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,0.7)}
         .login-logo{text-align:center;margin-bottom:28px}
         .login-title{font-family:var(--font-head);font-size:26px;font-weight:800;margin-bottom:4px}
         .login-sub{color:var(--text3);font-size:13px}
@@ -264,24 +275,24 @@
 <div id="login-screen">
     <div class="login-card">
         <div class="login-logo">
-            <div style="width:56px;height:56px;background:linear-gradient(135deg,#00e5ff,#8b5cf6);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:#fff;box-shadow:0 0 30px rgba(0,229,255,0.3)">SC</div>
+            <div style="width:56px;height:56px;background:linear-gradient(135deg,#ff7a00,#ffc600);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:#111;box-shadow:0 0 30px rgba(255,122,0,0.35)">SC</div>
             <div class="login-title">StockCommand</div>
-            <div class="login-sub">Warehouse Intelligence Platform</div>
+            <div class="login-sub">Platformă de gestiune stoc pentru scule</div>
         </div>
         <div class="login-form">
             <div class="form-group">
-                <label class="form-label">Username</label>
-                <input class="form-input" id="login-user" type="text" placeholder="Enter username" value="admin"/>
+                <label class="form-label">Utilizator</label>
+                <input class="form-input" id="login-user" type="text" placeholder="Introdu utilizatorul" value="admin"/>
             </div>
             <div class="form-group">
-                <label class="form-label">Password</label>
-                <input class="form-input" id="login-pass" type="password" placeholder="Enter password" value="admin123"/>
+                <label class="form-label">Parolă</label>
+                <input class="form-input" id="login-pass" type="password" placeholder="Introdu parola" value="admin123"/>
             </div>
-            <button class="btn btn-primary" style="width:100%;justify-content:center;padding:11px" onclick="doLogin()">Sign In</button>
-            <div id="login-err" style="color:var(--red);font-size:12px;text-align:center;display:none">Invalid credentials</div>
+            <button class="btn btn-primary" style="width:100%;justify-content:center;padding:11px" onclick="doLogin()">Autentificare</button>
+            <div id="login-err" style="color:var(--red);font-size:12px;text-align:center;display:none">Utilizator sau parolă greșite</div>
         </div>
         <div style="margin-top:20px;padding:12px;background:var(--bg3);border-radius:8px;font-size:11px;color:var(--text3)">
-            <div style="font-weight:600;margin-bottom:4px;color:var(--text2)">Demo accounts:</div>
+            <div style="font-weight:600;margin-bottom:4px;color:var(--text2)">Conturi demo:</div>
             admin / admin123 &nbsp;|&nbsp; employee / emp123 &nbsp;|&nbsp; viewer / view123
         </div>
     </div>
@@ -296,57 +307,57 @@
     <nav id="sidebar">
         <div class="sidebar-logo">
             <div class="logo-mark">SC</div>
-            <div class="logo-text">Stock<span>Command</span></div>
+            <div class="logo-text">Stock<span>Command Scule</span></div>
         </div>
         <div class="sidebar-nav">
-            <div class="nav-section-label">Overview</div>
+            <div class="nav-section-label">General</div>
             <div class="nav-item active" data-page="dashboard" onclick="navigate('dashboard')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-                <span>Dashboard</span>
+                <span>Panou general</span>
             </div>
-            <div class="nav-section-label">Inventory</div>
+            <div class="nav-section-label">Stoc</div>
             <div class="nav-item" data-page="products" onclick="navigate('products')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
-                <span>Products</span>
+                <span>Produse</span>
             </div>
             <div class="nav-item" data-page="reception" onclick="navigate('reception')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-                <span>Goods Reception</span>
+                <span>Recepție marfă</span>
             </div>
             <div class="nav-item" data-page="movements" onclick="navigate('movements')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3l4 4-4 4"/><path d="M21 7H9"/><path d="M7 21l-4-4 4-4"/><path d="M3 17h12"/></svg>
-                <span>Stock Movements</span>
+                <span>Mișcări stoc</span>
             </div>
-            <div class="nav-section-label">Management</div>
+            <div class="nav-section-label">Documente</div>
             <div class="nav-item" data-page="invoices" onclick="navigate('invoices')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
-                <span>Invoices</span>
+                <span>Facturi</span>
             </div>
             <div class="nav-item" data-page="suppliers" onclick="navigate('suppliers')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-                <span>Suppliers</span>
+                <span>Furnizori</span>
             </div>
             <div class="nav-item" data-page="scanner" onclick="navigate('scanner')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="4" height="10"/><rect x="8.5" y="7" width="2" height="10"/><rect x="12" y="7" width="3" height="10"/><rect x="16.5" y="7" width="1.5" height="10"/><rect x="19" y="7" width="2" height="10"/><path d="M1 5h22M1 19h22"/></svg>
-                <span>Scanner</span>
+                <span>Scanner coduri</span>
             </div>
-            <div class="nav-section-label">Analytics</div>
+            <div class="nav-section-label">Analiză</div>
             <div class="nav-item" data-page="reports" onclick="navigate('reports')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
-                <span>Reports</span>
+                <span>Rapoarte</span>
             </div>
             <div class="nav-item" data-page="alerts" onclick="navigate('alerts')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-                <span>Alerts</span>
+                <span>Alerte stoc</span>
                 <span class="nav-badge" id="alert-badge">0</span>
             </div>
             <div class="nav-item" id="nav-users" data-page="users" onclick="navigate('users')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                <span>Users</span>
+                <span>Utilizatori</span>
             </div>
             <div class="nav-item" data-page="activity" onclick="navigate('activity')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                <span>Activity Log</span>
+                <span>Jurnal activitate</span>
             </div>
         </div>
         <div class="sidebar-footer">
@@ -370,10 +381,10 @@
             <button class="topbar-btn" id="sidebar-toggle" onclick="toggleSidebar()">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
             </button>
-            <div class="topbar-title" id="page-title">Dashboard</div>
+            <div class="topbar-title" id="page-title">Panou general</div>
             <div class="topbar-search">
                 <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                <input type="text" placeholder="Quick search products..." id="global-search" oninput="globalSearch(this.value)" autocomplete="off"/>
+                <input type="text" placeholder="Căutare rapidă produse..." id="global-search" oninput="globalSearch(this.value)" autocomplete="off"/>
             </div>
             <button class="topbar-btn" onclick="toggleTheme()">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="theme-icon"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
@@ -403,11 +414,13 @@
     let currentPage = 'dashboard';
     let isDark = true;
 
-    const USERS = [
-      {id:1,username:'admin',password:'admin123',role:'admin',name:'Admin User',color:'#00e5ff'},
-      {id:2,username:'employee',password:'emp123',role:'employee',name:'Jane Smith',color:'#00e096'},
-      {id:3,username:'viewer',password:'view123',role:'viewer',name:'Bob Viewer',color:'#8b5cf6'},
+    const DEFAULT_USERS = [
+      {id:1,username:'admin',password:'admin123',role:'admin',name:'Admin',color:'#ff7a00'},
+      {id:2,username:'magazie',password:'magazie123',role:'employee',name:'Operator magazie',color:'#27c46b'},
+      {id:3,username:'vizitator',password:'vizitator',role:'viewer',name:'Vizitator',color:'#7c5cff'},
     ];
+
+    let users = loadState('users', DEFAULT_USERS);
 
     // Load from localStorage or use defaults
     function loadState(key, def) {
@@ -456,9 +469,13 @@
 
     function nextId(type){ idCounters[type]++; saveState('idCounters',idCounters); return idCounters[type]; }
     function persist(){
-      saveState('products',products);saveState('categories',categories);
-      saveState('suppliers',suppliers);saveState('movements',movements);
-      saveState('invoices',invoices);saveState('activityLog',activityLog);
+      saveState('users',users);
+      saveState('products',products);
+      saveState('categories',categories);
+      saveState('suppliers',suppliers);
+      saveState('movements',movements);
+      saveState('invoices',invoices);
+      saveState('activityLog',activityLog);
     }
 
     function logActivity(action, detail){
@@ -473,7 +490,7 @@
     function doLogin(){
       const u = document.getElementById('login-user').value.trim();
       const p = document.getElementById('login-pass').value.trim();
-      const found = USERS.find(x=>x.username===u&&x.password===p);
+      const found = users.find(x=>x.username===u&&x.password===p);
       if(!found){ document.getElementById('login-err').style.display='block'; return; }
       currentUser = found;
       document.getElementById('login-screen').style.display='none';
@@ -508,10 +525,10 @@
       currentPage=page;
       document.querySelectorAll('.nav-item').forEach(el=>el.classList.toggle('active',el.dataset.page===page));
       document.getElementById('page-title').textContent={
-        dashboard:'Dashboard',products:'Products',reception:'Goods Reception',
-        movements:'Stock Movements',invoices:'Invoices',suppliers:'Suppliers',
-        scanner:'Barcode Scanner',reports:'Reports & Export',alerts:'Low Stock Alerts',
-        users:'User Management',activity:'Activity Log'
+        dashboard:'Panou general',products:'Produse',reception:'Recepție marfă',
+        movements:'Mișcări stoc',invoices:'Facturi',suppliers:'Furnizori',
+        scanner:'Scanner coduri',reports:'Rapoarte & export',alerts:'Alerte stoc',
+        users:'Administrare utilizatori',activity:'Jurnal activitate'
       }[page]||page;
       const content=document.getElementById('content');
       content.innerHTML='<div style="color:var(--text3);padding:20px">Loading...</div>';
@@ -619,40 +636,40 @@
 
       document.getElementById('content').innerHTML = `
       <div class="section-head">
-        <h1>Dashboard</h1>
-        <span style="font-size:12px;color:var(--text3)">${new Date().toLocaleDateString('en',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</span>
+        <h1>Panou general</h1>
+        <span style="font-size:12px;color:var(--text3)">${new Date().toLocaleDateString('ro-RO',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</span>
       </div>
       <div class="stat-grid">
         <div class="stat-card accent">
           <div class="stat-icon accent"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
           <div class="stat-val">€${fmt(totalVal)}</div>
-          <div class="stat-label">Stock Value (Cost)</div>
-          <div class="stat-sub">Sell value: €${fmt(totalSell)}</div>
+          <div class="stat-label">Valoare stoc (cost)</div>
+          <div class="stat-sub">Valoare vânzare: €${fmt(totalSell)}</div>
         </div>
         <div class="stat-card green">
           <div class="stat-icon green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></div>
           <div class="stat-val">${products.length}</div>
-          <div class="stat-label">Total Products</div>
-          <div class="stat-sub">${totalUnits.toLocaleString()} total units</div>
+          <div class="stat-label">Produse în stoc</div>
+          <div class="stat-sub">${totalUnits.toLocaleString()} bucăți totale</div>
         </div>
         <div class="stat-card red">
           <div class="stat-icon red"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></div>
           <div class="stat-val">${lowStockItems.length}</div>
-          <div class="stat-label">Low Stock Alerts</div>
-          <div class="stat-sub">${products.filter(p=>p.stock===0).length} out of stock</div>
+          <div class="stat-label">Alerte stoc mic</div>
+          <div class="stat-sub">${products.filter(p=>p.stock===0).length} produse epuizate</div>
         </div>
         <div class="stat-card amber">
           <div class="stat-icon amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
           <div class="stat-val">${invoices.length}</div>
-          <div class="stat-label">Total Invoices</div>
-          <div class="stat-sub">${suppliers.length} active suppliers</div>
+          <div class="stat-label">Facturi</div>
+          <div class="stat-sub">${suppliers.length} furnizori activi</div>
         </div>
       </div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px">
         <!-- Category Chart -->
         <div class="table-wrap">
-          <div class="table-header"><div class="table-title">Value by Category</div></div>
+          <div class="table-header"><div class="table-title">Valoare pe categorie</div></div>
           <div style="padding:20px">
             ${catKeys.map(k=>`
             <div style="margin-bottom:14px">
@@ -669,17 +686,17 @@
         <!-- Low Stock -->
         <div class="table-wrap">
           <div class="table-header">
-            <div class="table-title">⚠ Low Stock Items</div>
-            <button class="btn btn-ghost btn-sm" onclick="navigate('alerts')">View All</button>
+            <div class="table-title">⚠ Produse cu stoc mic</div>
+            <button class="btn btn-ghost btn-sm" onclick="navigate('alerts')">Vezi toate</button>
           </div>
           <div style="padding:12px 16px">
-            ${lowStockItems.length===0?`<div class="empty-state" style="padding:24px"><div style="font-size:28px;margin-bottom:8px">✓</div><div style="font-size:13px;color:var(--green)">All stock levels healthy!</div></div>`
+            ${lowStockItems.length===0?`<div class="empty-state" style="padding:24px"><div style="font-size:28px;margin-bottom:8px">✓</div><div style="font-size:13px;color:var(--green)">Toate stocurile sunt în regulă</div></div>`
             :lowStockItems.slice(0,6).map(p=>`
             <div class="alert-item ${p.stock===0?'':'amber'}" style="margin-bottom:8px">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
               <div style="flex:1">
                 <div style="font-size:13px;font-weight:600">${p.name}</div>
-                <div style="font-size:11px;color:var(--text3)">${p.stock===0?'OUT OF STOCK':`Only ${p.stock} left (min: ${p.lowStockAlert})`}</div>
+                <div style="font-size:11px;color:var(--text3)">${p.stock===0?'STOC EPUIZAT':`Doar ${p.stock} rămase (minim: ${p.lowStockAlert})`}</div>
               </div>
               <span class="badge ${p.stock===0?'red':'amber'}">${p.stock} ${p.unit}</span>
             </div>`).join('')}
@@ -690,14 +707,14 @@
       <!-- Recent Movements -->
       <div class="table-wrap">
         <div class="table-header">
-          <div class="table-title">Recent Stock Movements</div>
-          <button class="btn btn-ghost btn-sm" onclick="navigate('movements')">View All</button>
+          <div class="table-title">Mișcări de stoc recente</div>
+          <button class="btn btn-ghost btn-sm" onclick="navigate('movements')">Vezi toate</button>
         </div>
         <div class="table-scroll">
           <table class="data-table">
-            <thead><tr><th>Product</th><th>Type</th><th>Qty</th><th>Date</th><th>User</th><th>Note</th></tr></thead>
+            <thead><tr><th>Produs</th><th>Tip</th><th>Cant.</th><th>Dată</th><th>Utilizator</th><th>Notă</th></tr></thead>
             <tbody>
-              ${recentMov.length===0?`<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:24px">No movements yet</td></tr>`
+              ${recentMov.length===0?`<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:24px">Nu există încă mișcări</td></tr>`
               :recentMov.map(m=>{const p=getProduct(m.productId);return`
               <tr>
                 <td><span style="font-weight:500">${p?p.name:'—'}</span></td>
@@ -749,14 +766,14 @@
 
       document.getElementById('content').innerHTML = `
       <div class="section-head">
-        <h1>Products</h1>
-        ${canEdit()?`<button class="btn btn-primary" onclick="openProductModal()">${svgIcon('plus')} Add Product</button>`:''}
+        <h1>Produse</h1>
+        ${canEdit()?`<button class="btn btn-primary" onclick="openProductModal()">${svgIcon('plus')} Adaugă produs</button>`:''}
       </div>
       <div class="table-wrap">
         <div class="table-header" style="flex-wrap:wrap;gap:8px">
           <div style="position:relative;flex:1;min-width:180px">
             <svg style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3)" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input class="form-input" id="prod-search" style="padding-left:32px" placeholder="Search name, code, barcode..." value="" oninput="PAGE_RENDERERS.products()"/>
+            <input class="form-input" id="prod-search" style="padding-left:32px" placeholder="Caută după nume, cod, cod de bare..." value="" oninput="PAGE_RENDERERS.products()"/>
           </div>
           <select class="form-input" id="prod-cat" style="width:auto" onchange="PAGE_RENDERERS.products()">
             <option value="">All Categories</option>
@@ -1729,25 +1746,31 @@
     PAGE_RENDERERS.users = function(){
       if(!isAdmin()){navigate('dashboard');return;}
       document.getElementById('content').innerHTML=`
-      <div class="section-head"><h1>User Management</h1></div>
+      <div class="section-head">
+        <h1>Administrare utilizatori</h1>
+        <button class="btn btn-primary btn-sm" onclick="openUserModal(null)">${svgIcon('plus')} Adaugă utilizator</button>
+      </div>
       <div class="table-wrap">
         <div class="table-scroll">
           <table class="data-table">
-            <thead><tr><th>User</th><th>Username</th><th>Role</th><th>Permissions</th></tr></thead>
+            <thead><tr><th>Nume</th><th>Utilizator</th><th>Rol</th><th>Drepturi</th><th style="width:120px">Acțiuni</th></tr></thead>
             <tbody>
-              ${USERS.map(u=>`<tr>
+              ${users.map(u=>`<tr>
                 <td>
                   <div style="display:flex;align-items:center;gap:10px">
-                    <div class="user-avatar" style="width:36px;height:36px;background:${u.color}22;color:${u.color}">${u.name[0]}</div>
+                    <div class="user-avatar" style="width:36px;height:36px;background:${u.color||'#ff7a00'}22;color:${u.color||'#ff7a00'}">${u.name[0]}</div>
                     <div><div style="font-weight:600">${u.name}</div></div>
                   </div>
                 </td>
                 <td class="mono">${u.username}</td>
                 <td><span class="badge ${u.role==='admin'?'red':u.role==='employee'?'green':'accent'}">${u.role}</span></td>
                 <td style="font-size:12px;color:var(--text2)">
-                  ${u.role==='admin'?'Full access — manage products, users, reports'
-                   :u.role==='employee'?'Add receipts, view stock, scan products'
-                   :'Read-only access — view only'}
+                  ${u.role==='admin'?'Acces complet — produse, utilizatori, rapoarte'
+                   :u.role==='employee'?'Recepție, mișcări stoc, vizualizare'
+                   :'Doar vizualizare'}
+                </td>
+                <td>
+                  <button class="btn btn-ghost btn-sm" onclick="openUserModal(${u.id})">${svgIcon('edit')} Editează</button>
                 </td>
               </tr>`).join('')}
             </tbody>
@@ -1755,9 +1778,84 @@
         </div>
       </div>
       <div style="margin-top:16px;padding:14px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;font-size:12px;color:var(--text3)">
-        <strong style="color:var(--text2)">Note:</strong> In this demo, users are predefined. A production system would connect to a backend API for full user CRUD, password management, and session handling.
+        <strong style="color:var(--text2)">Info:</strong> utilizatorii și parolele se salvează local în browser (localStorage), deci funcționează și dacă site-ul este găzduit pe GitHub Pages. Pe fiecare calculator se va păstra stocul separat.
       </div>`;
     };
+
+    function openUserModal(id){
+      const u = id!=null ? users.find(x=>x.id===id) : {id:null,name:'',username:'',password:'',role:'employee',color:'#ff7a00'};
+      openModal(`
+        <div class="modal-head">
+          <h2>${id!=null?'Editează utilizator':'Utilizator nou'}</h2>
+          <button class="btn btn-ghost btn-sm btn-icon" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Nume afișat</label>
+              <input class="form-input" id="user-name" value="${u.name||''}" placeholder="Ex: Administrator depozit"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Utilizator</label>
+              <input class="form-input" id="user-username" value="${u.username||''}" placeholder="Ex: admin-depozit"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Parolă</label>
+              <input class="form-input" id="user-password" type="text" value="${u.password||''}" placeholder="Setează parola"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Rol</label>
+              <select class="form-input" id="user-role">
+                <option value="admin" ${u.role==='admin'?'selected':''}>Admin</option>
+                <option value="employee" ${u.role==='employee'?'selected':''}>Operator magazie</option>
+                <option value="viewer" ${u.role==='viewer'?'selected':''}>Vizualizare</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Culoare avatar</label>
+              <input class="form-input" id="user-color" type="color" value="${u.color||'#ff7a00'}" style="padding:4px 6px;height:38px"/>
+            </div>
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button class="btn btn-ghost" onclick="closeModal()">Anulează</button>
+          <button class="btn btn-primary" onclick="saveUser(${id!=null?id:'null'})">Salvează</button>
+        </div>
+      `,'sm');
+    }
+
+    function saveUser(id){
+      const name = document.getElementById('user-name').value.trim();
+      const username = document.getElementById('user-username').value.trim();
+      const password = document.getElementById('user-password').value.trim();
+      const role = document.getElementById('user-role').value;
+      const color = document.getElementById('user-color').value;
+      if(!name || !username || !password){
+        toast('Completează numele, utilizatorul și parola','error');
+        return;
+      }
+      if(id==null){
+        const newId = users.reduce((m,u)=>Math.max(m,u.id),0)+1;
+        users.push({id:newId,name,username,password,role,color});
+      }else{
+        const idx = users.findIndex(u=>u.id===id);
+        if(idx>-1){
+          users[idx] = {...users[idx],name,username,password,role,color};
+          if(currentUser && currentUser.id===id){
+            currentUser = users[idx];
+            document.getElementById('user-name-small').textContent=currentUser.name;
+            document.getElementById('user-role-small').textContent=currentUser.role;
+            document.getElementById('user-avatar-small').textContent=currentUser.name[0];
+            document.getElementById('user-avatar-small').style.background=currentUser.color+'22';
+            document.getElementById('user-avatar-small').style.color=currentUser.color;
+          }
+        }
+      }
+      persist();
+      closeModal();
+      PAGE_RENDERERS.users();
+      toast('Utilizator salvat','success');
+    }
 
     // ═══════════════════════════════════════════════════════════════════
     // PAGE: ACTIVITY LOG
