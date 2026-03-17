@@ -326,6 +326,13 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
                 <span>Panou general</span>
             </div>
+            <div class="nav-item" data-page="survey" onclick="navigate('survey')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 11l3 3L22 4"/>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                </svg>
+                <span>Chestionar</span>
+            </div>
             <div class="nav-section-label">Stoc</div>
             <div class="nav-item" data-page="products" onclick="navigate('products')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
@@ -432,6 +439,7 @@
     ];
 
     let users = loadState('users', DEFAULT_USERS);
+    let surveyResponses = loadState('surveyResponses', []);
 
     // Load from localStorage or use defaults
     function loadState(key, def) {
@@ -487,6 +495,7 @@
       saveState('movements',movements);
       saveState('invoices',invoices);
       saveState('activityLog',activityLog);
+      saveState('surveyResponses',surveyResponses);
     }
 
     function logActivity(action, detail){
@@ -539,7 +548,8 @@
         dashboard:'Panou general',products:'Produse',reception:'Recepție marfă',
         movements:'Mișcări stoc',invoices:'Facturi',suppliers:'Furnizori',
         scanner:'Scanner coduri',reports:'Rapoarte & export',alerts:'Alerte stoc',
-        users:'Administrare utilizatori',activity:'Jurnal activitate'
+        users:'Administrare utilizatori',activity:'Jurnal activitate',
+        survey:'Chestionar'
       }[page]||page;
       const content=document.getElementById('content');
       content.innerHTML='<div style="color:var(--text3);padding:20px">Se încarcă...</div>';
@@ -633,6 +643,215 @@
     // PAGE: DASHBOARD
     // ═══════════════════════════════════════════════════════════════════
     const PAGE_RENDERERS = {};
+
+    // ═══════════════════════════════════════════════════════════════════
+    // PAGE: SURVEY (local-only)
+    // ═══════════════════════════════════════════════════════════════════
+    PAGE_RENDERERS.survey = function(){
+      const total = surveyResponses.length;
+      const recent = surveyResponses.slice().sort((a,b)=> (b.ts||'').localeCompare(a.ts||'')).slice(0,12);
+
+      document.getElementById('content').innerHTML = `
+      <div class="section-head">
+        <h1>Chestionar (stare de bine)</h1>
+        <span class="badge gray">${total} răspunsuri salvate pe acest dispozitiv</span>
+        ${isAdmin() ? `<button class="btn btn-ghost btn-sm" onclick="exportSurveyCSV()">${svgIcon('download')} Export CSV</button>` : ``}
+        ${isAdmin() && total>0 ? `<button class="btn btn-danger btn-sm" onclick="if(confirm('Ștergi toate răspunsurile salvate local?')){surveyResponses=[];persist();PAGE_RENDERERS.survey();toast('Răspunsuri șterse','success')}">Șterge</button>` : ``}
+      </div>
+
+      <div class="table-wrap" style="margin-bottom:16px">
+        <div class="table-header"><div class="table-title">Notă importantă</div></div>
+        <div style="padding:18px 20px;color:var(--text2);font-size:13px;line-height:1.65">
+          <div style="font-weight:700;color:var(--text);margin-bottom:6px">Transparență & confidențialitate</div>
+          <ul style="margin-left:18px;display:grid;gap:6px">
+            <li>Chestionarul este pentru <b>scop informativ</b> și nu înlocuiește sfatul medical.</li>
+            <li>Răspunsurile se salvează <b>doar în browser</b> (localStorage) pe acest dispozitiv, fără trimitere automată către un server.</li>
+            <li>Numele este <b>opțional</b>. Completează doar dacă vrei.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="table-wrap" style="margin-bottom:16px">
+        <div class="table-header"><div class="table-title">Completează chestionarul</div></div>
+        <div style="padding:20px">
+          <div class="form-grid cols3">
+            <div class="form-group">
+              <label class="form-label">Prenume (opțional)</label>
+              <input class="form-input" id="sv-firstName" placeholder="Ex. Andrei" autocomplete="given-name"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Nume (opțional)</label>
+              <input class="form-input" id="sv-lastName" placeholder="Ex. Popescu" autocomplete="family-name"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Vârstă (interval)</label>
+              <select class="form-input" id="sv-age">
+                <option value="">Alege…</option>
+                <option>sub 18</option>
+                <option>18–24</option>
+                <option>25–34</option>
+                <option>35–44</option>
+                <option>45–54</option>
+                <option>55–64</option>
+                <option>65+</option>
+              </select>
+            </div>
+
+            <div class="form-group full">
+              <label class="form-label">Cum te simți azi? (1 = foarte rău, 5 = foarte bine)</label>
+              <div style="display:flex;gap:10px;flex-wrap:wrap">
+                ${[1,2,3,4,5].map(n=>`
+                  <label style="display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:var(--bg3);cursor:pointer">
+                    <input type="radio" name="sv-wellbeing" value="${n}" style="accent-color:var(--accent)"/>
+                    <span style="font-weight:700">${n}</span>
+                  </label>
+                `).join('')}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Ore de somn (noaptea trecută)</label>
+              <input class="form-input" id="sv-sleep" type="number" min="0" max="24" step="0.5" placeholder="Ex. 7.5"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Nivel de stres (0–10)</label>
+              <input class="form-input" id="sv-stress" type="number" min="0" max="10" step="1" placeholder="Ex. 4"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Motiv principal (opțional)</label>
+              <select class="form-input" id="sv-reason">
+                <option value="">Alege…</option>
+                <option>Somn</option>
+                <option>Muncă/școală</option>
+                <option>Sănătate fizică</option>
+                <option>Sănătate mentală</option>
+                <option>Altele</option>
+              </select>
+            </div>
+
+            <div class="form-group full">
+              <label class="form-label">Observații (opțional)</label>
+              <textarea class="form-input" id="sv-notes" placeholder="Scrie orice consideri util…"></textarea>
+            </div>
+
+            <div class="form-group full">
+              <label style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:var(--bg3);cursor:pointer">
+                <input type="checkbox" id="sv-consent" style="margin-top:3px;accent-color:var(--accent)"/>
+                <div style="font-size:12px;color:var(--text2);line-height:1.5">
+                  Confirm că am înțeles nota de mai sus și sunt de acord ca răspunsurile mele să fie salvate local pe acest dispozitiv.
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap">
+            <button class="btn btn-ghost" onclick="resetSurveyForm()">Reset</button>
+            <button class="btn btn-primary" onclick="submitSurvey()">Trimite</button>
+          </div>
+        </div>
+      </div>
+
+      ${isAdmin() ? `
+      <div class="table-wrap">
+        <div class="table-header"><div class="table-title">Răspunsuri recente (admin)</div></div>
+        <div class="table-scroll">
+          <table class="data-table">
+            <thead><tr><th>Dată</th><th>Nume</th><th>Vârstă</th><th>Stare</th><th>Somn</th><th>Stres</th><th>Motiv</th></tr></thead>
+            <tbody>
+              ${recent.length===0 ? `<tr><td colspan="7"><div class="empty-state"><h3>Nu există răspunsuri</h3><p>Completează chestionarul ca să apară aici.</p></div></td></tr>` : recent.map(r=>`
+                <tr>
+                  <td class="mono" style="color:var(--text3);font-size:12px">${(r.ts||'—').replace('T',' ').slice(0,19)}</td>
+                  <td>${[r.lastName,r.firstName].filter(Boolean).join(' ')||'—'}</td>
+                  <td><span class="tag">${r.age||'—'}</span></td>
+                  <td><span class="badge ${r.wellbeing>=4?'green':(r.wellbeing<=2?'red':'amber')}">${r.wellbeing||'—'}</span></td>
+                  <td>${(r.sleepHours ?? '—')}</td>
+                  <td>${(r.stress ?? '—')}</td>
+                  <td>${r.reason||'—'}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      ` : ``}
+      `;
+    };
+
+    function resetSurveyForm(){
+      const ids = ['sv-firstName','sv-lastName','sv-age','sv-sleep','sv-stress','sv-reason','sv-notes','sv-consent'];
+      ids.forEach(id=>{
+        const el=document.getElementById(id);
+        if(!el) return;
+        if(el.type==='checkbox') el.checked=false;
+        else el.value='';
+      });
+      document.querySelectorAll('input[name="sv-wellbeing"]').forEach(el=>{ el.checked=false; });
+    }
+
+    function submitSurvey(){
+      const consent = document.getElementById('sv-consent')?.checked;
+      if(!consent){ toast('Te rog bifează consimțământul.','warning'); return; }
+
+      const wellbeingEl = document.querySelector('input[name="sv-wellbeing"]:checked');
+      const wellbeing = wellbeingEl ? Number(wellbeingEl.value) : null;
+
+      const firstName = document.getElementById('sv-firstName').value.trim();
+      const lastName = document.getElementById('sv-lastName').value.trim();
+      const age = document.getElementById('sv-age').value;
+      const sleepHoursRaw = document.getElementById('sv-sleep').value;
+      const stressRaw = document.getElementById('sv-stress').value;
+      const reason = document.getElementById('sv-reason').value;
+      const notes = document.getElementById('sv-notes').value.trim();
+
+      const sleepHours = sleepHoursRaw==='' ? null : Number(sleepHoursRaw);
+      const stress = stressRaw==='' ? null : Number(stressRaw);
+
+      if(!age && wellbeing==null && sleepHours==null && stress==null && !reason && !notes && !firstName && !lastName){
+        toast('Completează măcar un câmp înainte de trimitere.','warning');
+        return;
+      }
+
+      surveyResponses.push({
+        ts: new Date().toISOString(),
+        by: currentUser ? currentUser.username : 'anon',
+        firstName: firstName || null,
+        lastName: lastName || null,
+        age: age || null,
+        wellbeing,
+        sleepHours,
+        stress,
+        reason: reason || null,
+        notes: notes || null,
+      });
+      persist();
+      toast('Răspuns salvat local. Mulțumim!','success');
+      resetSurveyForm();
+      if(isAdmin()) PAGE_RENDERERS.survey();
+    }
+
+    function exportSurveyCSV(){
+      if(!isAdmin()){ toast('Doar admin poate exporta.','warning'); return; }
+      if(!surveyResponses.length){ toast('Nu există răspunsuri de exportat.','info'); return; }
+
+      const esc = (v) => {
+        if(v==null) return '';
+        const s = String(v);
+        if(/[",\n]/.test(s)) return `"${s.replace(/"/g,'""')}"`;
+        return s;
+      };
+      const header = ['ts','by','lastName','firstName','age','wellbeing','sleepHours','stress','reason','notes'];
+      const rows = surveyResponses.map(r => header.map(k=>esc(r[k])).join(','));
+      const csv = [header.join(','), ...rows].join('\n');
+
+      const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `survey-responses-${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 0);
+      toast('CSV generat.','success');
+    }
 
     PAGE_RENDERERS.dashboard = function(){
       const totalVal = products.reduce((s,p)=>s+p.stock*p.buyPrice,0);
