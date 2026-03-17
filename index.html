@@ -1,2198 +1,414 @@
 <!DOCTYPE html>
-<html lang="ro" data-theme="light">
+<html lang="ro">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>StockCommand — Gestiune Stoc Scule</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com"/>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chestionar Oficial Foarte Serios</title>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
         :root {
-          /* Paletă foarte luminoasă, industrială */
-          --bg: #f8fafc;
-          --bg1: #ffffff;
-          --bg2: #ffffff;
-          --bg3: #f1f5f9;
-          --bg4: #e2e8f0;
-          --border: #cfd6e6;
-          --border2: #b7c2db;
-          --accent: #ff7a00;           /* portocaliu industrial */
-          --accent-dim: rgba(255,122,0,0.12);
-          --accent-glow: rgba(255,122,0,0.28);
-          --green: #1ba463;
-          --green-dim: rgba(27,164,99,0.12);
-          --red: #e53935;
-          --red-dim: rgba(229,57,53,0.12);
-          --amber: #f9a825;
-          --amber-dim: rgba(249,168,37,0.14);
-          --violet: #6d4cff;
-          --violet-dim: rgba(109,76,255,0.14);
-          --text: #202534;
-          --text2: #5b6478;
-          --text3: #8b94aa;
-          --font: 'Outfit', sans-serif;
-          --font-head: 'Syne', sans-serif;
-          --font-mono: 'IBM Plex Mono', monospace;
-          --radius: 10px;
-          --radius-lg: 16px;
-          --shadow: 0 4px 24px rgba(0,0,0,0.5);
-          --shadow-accent: 0 0 24px rgba(0,229,255,0.15);
-          --transition: 0.18s cubic-bezier(0.4,0,0.2,1);
+          --cream: #F7F3EC;
+          --ink: #1A1612;
+          --muted: #7A7068;
+          --accent: #C84B2F;
+          --accent-light: #FAEAE5;
+          --border: #D9D2C8;
+          --card: #FFFFFF;
+          --success: #2D6A4F;
+          --success-light: #D8F3DC;
         }
-        [data-theme="dark"] {
-          /* variantă închisă, dacă vrei să revii pe dark */
-          --bg: #050608;
-          --bg1: #0b0d11;
-          --bg2: #111318;
-          --bg3: #181b22;
-          --bg4: #20242c;
-          --border: #2a2f39;
-          --border2: #363c48;
-          --accent: #ff7a00;
-          --accent-dim: rgba(255,122,0,0.16);
-          --accent-glow: rgba(255,122,0,0.35);
-          --green: #27c46b;
-          --green-dim: rgba(39,196,107,0.16);
-          --red: #ff3b3b;
-          --red-dim: rgba(255,59,59,0.16);
-          --amber: #ffc600;
-          --amber-dim: rgba(255,198,0,0.18);
-          --violet: #7c5cff;
-          --violet-dim: rgba(124,92,255,0.18);
-          --text: #e6edf7;
-          --text2: #9aa4b8;
-          --text3: #616a7a;
-          --shadow: 0 4px 24px rgba(0,0,0,0.5);
-          --shadow-accent: 0 0 24px rgba(0,0,0,0.4);
+
+        body {
+          background: var(--cream);
+          color: var(--ink);
+          font-family: 'DM Sans', sans-serif;
+          font-weight: 400;
+          min-height: 100vh;
+          padding: 3rem 1rem 6rem;
         }
-        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-        html{scroll-behavior:smooth}
-        body{
-          font-family:var(--font);
-          background:linear-gradient(180deg,#ffffff 0,#f1f5f9 100%);
-          color:var(--text);
-          min-height:100vh;
-          overflow-x:hidden;
-          font-size:16px;
-          line-height:1.6;
-          padding:18px 14px;
+
+        .page-header {
+          max-width: 640px;
+          margin: 0 auto 3rem;
+          text-align: center;
         }
-        /* ─── SCROLLBAR ─── */
-        ::-webkit-scrollbar{width:5px;height:5px}
-        ::-webkit-scrollbar-track{background:var(--bg1)}
-        ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
-        ::-webkit-scrollbar-thumb:hover{background:var(--accent)}
-        /* ─── LAYOUT ─── */
-        #app{
-          display:flex;
-          min-height:calc(100vh - 36px);
-          width:100%;
-          max-width:1480px;
-          margin:0 auto;
-          overflow:hidden;
-          border-radius:12px;
-          border:1px solid var(--border);
-          box-shadow:0 10px 35px rgba(15,23,42,0.18);
-          background:var(--bg1);
+
+        .badge {
+          display: inline-block;
+          font-size: 11px;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: var(--accent);
+          border: 1px solid var(--accent);
+          padding: 4px 14px;
+          border-radius: 100px;
+          margin-bottom: 1.2rem;
         }
-        #sidebar{width:240px;min-width:240px;background:var(--bg1);border-right:1px solid var(--border);display:flex;flex-direction:column;transition:width var(--transition);position:relative;z-index:100}
-        #sidebar.collapsed{width:64px;min-width:64px}
-        #main{flex:1;overflow:hidden;display:flex;flex-direction:column}
-        #topbar{background:var(--bg1);border-bottom:1px solid var(--border);padding:0 24px;height:64px;display:flex;align-items:center;gap:12px;flex-shrink:0}
-        #content{flex:1;overflow-y:auto;padding:28px}
-        /* ─── SIDEBAR ─── */
-        .sidebar-logo{padding:16px 18px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);flex-shrink:0}
-        .logo-mark{width:34px;height:34px;background:linear-gradient(135deg,var(--accent),var(--violet));border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-weight:800;font-size:15px;color:#fff;flex-shrink:0;box-shadow:0 0 16px var(--accent-glow)}
-        .logo-text{font-family:var(--font-head);font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;letter-spacing:0.02em}
-        .logo-text span{color:var(--accent)}
-        .sidebar-nav{flex:1;overflow-y:auto;padding:10px 0}
-        .nav-section-label{font-size:10px;font-weight:600;letter-spacing:0.12em;color:var(--text3);padding:14px 18px 6px;text-transform:uppercase;white-space:nowrap;overflow:hidden}
-        #sidebar.collapsed .nav-section-label{opacity:0;height:0;padding:0}
-        .nav-item{display:flex;align-items:center;gap:11px;padding:9px 18px;cursor:pointer;border-radius:0;color:var(--text2);font-size:14px;font-weight:500;transition:all var(--transition);position:relative;white-space:nowrap;overflow:hidden;border-left:3px solid transparent;margin:1px 0}
-        .nav-item:hover{background:var(--bg3);color:var(--text)}
-        .nav-item.active{background:var(--accent-dim);color:var(--accent);border-left-color:var(--accent)}
-        .nav-item svg{flex-shrink:0;width:18px;height:18px}
-        .nav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;font-family:var(--font-mono)}
-        .sidebar-footer{padding:14px;border-top:1px solid var(--border);flex-shrink:0}
-        .user-card{display:flex;align-items:center;gap:10px;padding:8px 6px;border-radius:var(--radius);background:var(--bg3);overflow:hidden}
-        .user-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
-        .user-info{overflow:hidden;flex:1}
-        .user-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        .user-role{font-size:11px;color:var(--text3);text-transform:capitalize}
-        /* ─── TOPBAR ─── */
-        .topbar-title{font-family:var(--font-head);font-weight:700;font-size:18px;flex:1}
-        .topbar-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:6px 14px;border-radius:var(--radius);font-size:13px;font-family:var(--font);cursor:pointer;display:flex;align-items:center;gap:6px;transition:all var(--transition);white-space:nowrap}
-        .topbar-btn:hover{border-color:var(--accent);color:var(--accent)}
-        .topbar-search{position:relative;flex:1;max-width:360px}
-        .topbar-search input{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:7px 14px 7px 38px;border-radius:var(--radius);font-size:13px;font-family:var(--font);outline:none;transition:all var(--transition)}
-        .topbar-search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
-        .topbar-search .search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none}
-        .notif-btn{position:relative;background:none;border:none;color:var(--text2);cursor:pointer;padding:6px;border-radius:var(--radius);transition:color var(--transition)}
-        .notif-btn:hover{color:var(--accent)}
-        .notif-dot{position:absolute;top:4px;right:4px;width:8px;height:8px;background:var(--red);border-radius:50%;border:2px solid var(--bg1)}
-        /* ─── CARDS ─── */
-        .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:24px}
-        .stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;position:relative;overflow:hidden;transition:all var(--transition)}
-        .stat-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:var(--shadow)}
-        .stat-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity var(--transition)}
-        .stat-card.accent::before{background:var(--accent-dim)}
-        .stat-card.green::before{background:var(--green-dim)}
-        .stat-card.red::before{background:var(--red-dim)}
-        .stat-card.amber::before{background:var(--amber-dim)}
-        .stat-card:hover::before{opacity:1}
-        .stat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
-        .stat-icon.accent{background:var(--accent-dim);color:var(--accent)}
-        .stat-icon.green{background:var(--green-dim);color:var(--green)}
-        .stat-icon.red{background:var(--red-dim);color:var(--red)}
-        .stat-icon.amber{background:var(--amber-dim);color:var(--amber)}
-        .stat-icon.violet{background:var(--violet-dim);color:var(--violet)}
-        .stat-val{font-family:var(--font-head);font-size:28px;font-weight:800;line-height:1;margin-bottom:4px}
-        .stat-label{font-size:12px;color:var(--text2);font-weight:500;text-transform:uppercase;letter-spacing:0.06em}
-        .stat-sub{font-size:12px;color:var(--text3);margin-top:4px}
-        /* ─── TABLE ─── */
-        .table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
-        .table-header{display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid var(--border);flex-wrap:wrap}
-        .table-title{font-family:var(--font-head);font-weight:700;font-size:15px;flex:1}
-        .data-table{width:100%;border-collapse:collapse}
-        .data-table th{padding:11px 16px;text-align:left;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);background:var(--bg3);border-bottom:1px solid var(--border);white-space:nowrap}
-        .data-table td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}
-        .data-table tr:last-child td{border-bottom:none}
-        .data-table tr:hover td{background:var(--bg3)}
-        .table-scroll{overflow-x:auto}
-        /* ─── BADGES ─── */
-        .badge{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;font-family:var(--font-mono);white-space:nowrap}
-        .badge.green{background:var(--green-dim);color:var(--green)}
-        .badge.red{background:var(--red-dim);color:var(--red)}
-        .badge.amber{background:var(--amber-dim);color:var(--amber)}
-        .badge.accent{background:var(--accent-dim);color:var(--accent)}
-        .badge.violet{background:var(--violet-dim);color:var(--violet)}
-        .badge.gray{background:var(--bg4);color:var(--text2)}
-        /* ─── BUTTONS ─── */
-        .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius);font-size:13px;font-weight:500;font-family:var(--font);cursor:pointer;border:none;transition:all var(--transition);white-space:nowrap}
-        .btn-primary{background:var(--accent);color:var(--bg);font-weight:600}
-        .btn-primary:hover{filter:brightness(1.15);box-shadow:0 0 16px var(--accent-glow)}
-        .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2)}
-        .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
-        .btn-danger{background:var(--red-dim);border:1px solid var(--red);color:var(--red)}
-        .btn-danger:hover{background:var(--red);color:#fff}
-        .btn-success{background:var(--green-dim);border:1px solid var(--green);color:var(--green)}
-        .btn-success:hover{background:var(--green);color:#fff}
-        .btn-sm{padding:5px 11px;font-size:12px}
-        .btn-icon{padding:6px;width:32px;height:32px;justify-content:center}
-        /* ─── FORMS ─── */
-        .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-        .form-grid.cols3{grid-template-columns:1fr 1fr 1fr}
-        .form-group{display:flex;flex-direction:column;gap:5px}
-        .form-group.full{grid-column:1/-1}
-        .form-label{font-size:12px;font-weight:600;color:var(--text2);letter-spacing:0.04em}
-        .form-input{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:var(--radius);font-size:13px;font-family:var(--font);outline:none;transition:all var(--transition);width:100%}
-        .form-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
-        .form-input::placeholder{color:var(--text3)}
-        select.form-input option{background:var(--bg2)}
-        textarea.form-input{resize:vertical;min-height:80px}
-        /* ─── MODAL ─── */
-        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);backdrop-filter:blur(4px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity var(--transition)}
-        .modal-overlay.open{opacity:1;pointer-events:all}
-        .modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-lg);width:100%;max-width:680px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;transform:scale(0.95);transition:transform var(--transition);box-shadow:0 20px 60px rgba(0,0,0,0.6)}
-        .modal-overlay.open .modal{transform:scale(1)}
-        .modal.sm{max-width:440px}
-        .modal.xl{max-width:900px}
-        .modal-head{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-shrink:0}
-        .modal-head h2{font-family:var(--font-head);font-weight:700;font-size:17px;flex:1}
-        .modal-body{padding:24px;overflow-y:auto;flex:1}
-        .modal-foot{padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;flex-shrink:0}
-        /* ─── MISC ─── */
-        .section-head{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
-        .section-head h1{font-family:var(--font-head);font-size:22px;font-weight:800;flex:1}
-        .divider{border:none;border-top:1px solid var(--border);margin:20px 0}
-        .empty-state{text-align:center;padding:48px 20px;color:var(--text2)}
-        .empty-state svg{margin:0 auto 16px;opacity:0.3}
-        .empty-state h3{font-family:var(--font-head);font-size:17px;font-weight:700;margin-bottom:6px}
-        .empty-state p{font-size:13px;color:var(--text3)}
-        .tag{display:inline-block;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:4px;font-size:11px;color:var(--text2);font-family:var(--font-mono)}
-        .mono{font-family:var(--font-mono);font-size:12px}
-        .stock-bar{height:4px;background:var(--bg4);border-radius:2px;overflow:hidden;min-width:60px}
-        .stock-bar-fill{height:100%;border-radius:2px;transition:width 0.4s ease}
-        /* ─── BARCODE SCANNER ─── */
-        .scanner-wrap{background:var(--bg3);border:2px dashed var(--border2);border-radius:var(--radius-lg);padding:30px;text-align:center;position:relative;overflow:hidden}
-        .scanner-line{position:absolute;left:10%;right:10%;height:2px;background:var(--accent);top:40%;animation:scan 2s ease-in-out infinite;box-shadow:0 0 8px var(--accent)}
-        @keyframes scan{0%,100%{top:20%}50%{top:80%}}
-        .scanner-input-area{display:flex;gap:10px;align-items:center;margin-top:16px}
-        /* ─── ALERTS ─── */
-        .alert-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--red-dim);border:1px solid var(--red);border-radius:var(--radius);margin-bottom:8px}
-        .alert-item.amber{background:var(--amber-dim);border-color:var(--amber)}
-        /* ─── UPLOAD ZONE ─── */
-        .upload-zone{border:2px dashed var(--border2);border-radius:var(--radius-lg);padding:32px;text-align:center;cursor:pointer;transition:all var(--transition);background:var(--bg3)}
-        .upload-zone:hover,.upload-zone.drag{border-color:var(--accent);background:var(--accent-dim)}
-        .upload-zone svg{margin:0 auto 12px;color:var(--accent)}
-        /* ─── PAGINATION ─── */
-        .pagination{display:flex;align-items:center;gap:4px;justify-content:flex-end;padding:12px 20px;border-top:1px solid var(--border)}
-        .page-btn{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:6px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);cursor:pointer;font-size:12px;font-family:var(--font-mono);transition:all var(--transition)}
-        .page-btn:hover{border-color:var(--accent);color:var(--accent)}
-        .page-btn.active{background:var(--accent);border-color:var(--accent);color:var(--bg);font-weight:700}
-        .page-btn:disabled{opacity:0.3;cursor:not-allowed}
-        /* ─── TOAST ─── */
-        #toast-container{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px}
-        .toast{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 16px;min-width:280px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);animation:slideIn 0.25s ease;font-size:13px}
-        .toast.success{border-left:3px solid var(--green)}
-        .toast.error{border-left:3px solid var(--red)}
-        .toast.info{border-left:3px solid var(--accent)}
-        .toast.warning{border-left:3px solid var(--amber)}
-        @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
-        @keyframes slideOut{to{transform:translateX(100%);opacity:0}}
-        /* ─── CHART ─── */
-        .chart-bar{display:flex;align-items:flex-end;gap:4px;height:100px;padding:0 4px}
-        .chart-bar-item{flex:1;background:var(--accent-dim);border-radius:4px 4px 0 0;transition:all var(--transition);cursor:pointer;position:relative;border-bottom:2px solid var(--accent)}
-        .chart-bar-item:hover{background:var(--accent);opacity:0.8}
-        /* ─── PRODUCT IMAGE ─── */
-        .product-thumb{width:40px;height:40px;border-radius:8px;background:var(--bg3);display:flex;align-items:center;justify-content:center;color:var(--text3);overflow:hidden;flex-shrink:0;border:1px solid var(--border)}
-        .product-thumb img{width:100%;height:100%;object-fit:cover}
-        /* ─── RESPONSIVE ─── */
-        @media(max-width:768px){
-          #sidebar{position:fixed;left:0;top:0;bottom:0;transform:translateX(-100%);z-index:200}
-          #sidebar.mobile-open{transform:translateX(0)}
-          #main{width:100vw}
-          .form-grid{grid-template-columns:1fr}
-          .form-grid.cols3{grid-template-columns:1fr}
-          #content{padding:16px}
-          .stat-grid{grid-template-columns:1fr 1fr}
-          .sidebar-overlay{display:block}
+
+        h1 {
+          font-family: 'Instrument Serif', serif;
+          font-size: clamp(2rem, 5vw, 3rem);
+          font-weight: 400;
+          line-height: 1.15;
+          color: var(--ink);
+          margin-bottom: 0.75rem;
         }
-        .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:199}
-        /* ─── LOGIN ─── */
-        #login-screen{position:fixed;inset:0;background:linear-gradient(180deg,#ffffff 0,#f1f5f9 100%);display:flex;align-items:center;justify-content:center;z-index:500;flex-direction:column;padding:16px}
-        .login-card{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:32px 28px;width:360px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,0.7)}
-        .login-logo{text-align:center;margin-bottom:28px}
-        .login-title{font-family:var(--font-head);font-size:26px;font-weight:800;margin-bottom:4px}
-        .login-sub{color:var(--text3);font-size:13px}
-        .login-form{display:flex;flex-direction:column;gap:14px;margin-top:24px}
-        /* ─── SUPPLIER CARD ─── */
-        .supplier-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;transition:all var(--transition)}
-        .supplier-card:hover{border-color:var(--border2);transform:translateY(-2px)}
-        /* ─── MOVEMENT ─── */
-        .movement-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-        /* ─── INLINE SEARCH RESULTS ─── */
-        .dropdown-list{position:absolute;top:100%;left:0;right:0;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);box-shadow:var(--shadow);z-index:50;max-height:200px;overflow-y:auto;margin-top:2px}
-        .dropdown-item{padding:8px 12px;cursor:pointer;font-size:13px;transition:background var(--transition);display:flex;align-items:center;gap:8px}
-        .dropdown-item:hover{background:var(--bg3)}
-        /* ─── PRINT HIDE ─── */
-        @media print{#sidebar,#topbar,.btn,button{display:none!important}#content{padding:0}}
+
+        h1 em {
+          font-style: italic;
+          color: var(--accent);
+        }
+
+        .subtitle {
+          font-size: 15px;
+          color: var(--muted);
+          line-height: 1.6;
+        }
+
+        .quiz-container {
+          max-width: 640px;
+          margin: 0 auto;
+          display: flex;
+          flex-direction: column;
+          gap: 1.25rem;
+        }
+
+        .q-card {
+          background: var(--card);
+          border: 1px solid var(--border);
+          border-radius: 16px;
+          padding: 1.75rem 2rem;
+          opacity: 0;
+          transform: translateY(20px);
+          animation: slideIn 0.5s ease forwards;
+        }
+
+        .q-card:nth-child(1) { animation-delay: 0.05s; }
+        .q-card:nth-child(2) { animation-delay: 0.12s; }
+        .q-card:nth-child(3) { animation-delay: 0.19s; }
+        .q-card:nth-child(4) { animation-delay: 0.26s; }
+        .q-card:nth-child(5) { animation-delay: 0.33s; }
+
+        @keyframes slideIn {
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        .q-number {
+          font-size: 11px;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: var(--muted);
+          margin-bottom: 0.6rem;
+        }
+
+        .q-text {
+          font-family: 'Instrument Serif', serif;
+          font-size: 1.25rem;
+          line-height: 1.4;
+          color: var(--ink);
+          margin-bottom: 1.25rem;
+        }
+
+        .q-note {
+          font-size: 12px;
+          color: var(--muted);
+          margin-top: -0.75rem;
+          margin-bottom: 1rem;
+          font-style: italic;
+        }
+
+        /* Text input */
+        input[type="text"] {
+          width: 100%;
+          padding: 10px 14px;
+          border: 1px solid var(--border);
+          border-radius: 10px;
+          font-family: 'DM Sans', sans-serif;
+          font-size: 15px;
+          color: var(--ink);
+          background: var(--cream);
+          outline: none;
+          transition: border-color 0.2s;
+        }
+        input[type="text"]:focus { border-color: var(--accent); background: #fff; }
+
+        /* Radio options */
+        .options { display: flex; flex-direction: column; gap: 10px; }
+
+        .opt {
+          display: flex;
+          align-items: flex-start;
+          gap: 12px;
+          padding: 12px 14px;
+          border: 1px solid var(--border);
+          border-radius: 10px;
+          cursor: pointer;
+          transition: all 0.15s;
+          font-size: 14px;
+          line-height: 1.45;
+          color: var(--ink);
+          background: var(--cream);
+          user-select: none;
+        }
+        .opt:hover { border-color: #C0B8AD; background: #F0EBE2; }
+        .opt.selected {
+          background: var(--accent-light);
+          border-color: var(--accent);
+          color: var(--accent);
+        }
+        .opt-dot {
+          width: 18px; height: 18px; min-width: 18px;
+          border-radius: 50%;
+          border: 1.5px solid var(--border);
+          margin-top: 1px;
+          display: flex; align-items: center; justify-content: center;
+          transition: all 0.15s;
+        }
+        .opt.selected .opt-dot {
+          background: var(--accent);
+          border-color: var(--accent);
+        }
+        .opt-dot-fill {
+          width: 7px; height: 7px; border-radius: 50%; background: white;
+          display: none;
+        }
+        .opt.selected .opt-dot-fill { display: block; }
+
+        /* Stars */
+        .stars-wrap { display: flex; gap: 10px; align-items: center; }
+        .star {
+          font-size: 34px;
+          cursor: pointer;
+          color: var(--border);
+          transition: color 0.1s, transform 0.1s;
+          line-height: 1;
+        }
+        .star:hover { transform: scale(1.2); }
+        .star.lit { color: #E08A1E; }
+        .star-label {
+          font-size: 13px;
+          color: var(--muted);
+          margin-left: 6px;
+        }
+
+        /* Submit */
+        .submit-wrap {
+          max-width: 640px;
+          margin: 0.5rem auto 0;
+          opacity: 0;
+          animation: slideIn 0.5s ease 0.42s forwards;
+        }
+
+        .btn-submit {
+          width: 100%;
+          padding: 15px;
+          background: var(--ink);
+          color: var(--cream);
+          border: none;
+          border-radius: 12px;
+          font-family: 'DM Sans', sans-serif;
+          font-size: 15px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: background 0.2s, transform 0.1s;
+          letter-spacing: 0.02em;
+        }
+        .btn-submit:hover { background: var(--accent); }
+        .btn-submit:active { transform: scale(0.98); }
+
+        /* Result */
+        #result {
+          display: none;
+          max-width: 640px;
+          margin: 1.5rem auto 0;
+          background: var(--success-light);
+          border: 1px solid #B7E4C7;
+          border-radius: 16px;
+          padding: 2rem;
+          text-align: center;
+          animation: slideIn 0.4s ease forwards;
+        }
+
+        .res-icon { font-size: 48px; margin-bottom: 1rem; }
+        .res-title {
+          font-family: 'Instrument Serif', serif;
+          font-size: 1.5rem;
+          color: var(--success);
+          margin-bottom: 0.5rem;
+        }
+        .res-text { font-size: 14px; color: #40916C; line-height: 1.6; }
+        .res-details {
+          margin-top: 1.25rem;
+          padding-top: 1.25rem;
+          border-top: 1px solid #B7E4C7;
+          text-align: left;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+        .res-row { font-size: 13px; color: var(--success); }
+        .res-row span { font-weight: 500; color: #1B4332; }
+
+        .footer-note {
+          text-align: center;
+          font-size: 12px;
+          color: var(--muted);
+          margin-top: 3rem;
+          font-style: italic;
+        }
     </style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div id="login-screen">
-    <div class="login-card">
-        <div class="login-logo">
-            <div style="width:56px;height:56px;background:linear-gradient(135deg,#ff7a00,#ffc600);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:#111;box-shadow:0 0 30px rgba(255,122,0,0.35)">SC</div>
-            <div class="login-title">StockCommand</div>
-            <div class="login-sub">Platformă de gestiune stoc pentru scule</div>
-        </div>
-        <div class="login-form">
-            <div class="form-group">
-                <label class="form-label">Utilizator</label>
-                <input class="form-input" id="login-user" type="text" placeholder="Introdu utilizatorul" value="admin"/>
+<header class="page-header">
+    <div class="badge">Clasificat: Absolut Inutil</div>
+    <h1>Chestionar <em>Oficial</em><br>Foarte Serios</h1>
+    <p class="subtitle">Te rugăm să răspunzi cu toată seriozitatea.<br>Datele tale sunt în siguranță. Probabil.</p>
+</header>
+
+<div class="quiz-container">
+
+    <!-- Q1 -->
+    <div class="q-card">
+        <div class="q-number">Întrebarea 01</div>
+        <div class="q-text">Cum te numești?</div>
+        <input type="text" id="q1" placeholder="scrie numele tău..." value="Octavia" />
+    </div>
+
+    <!-- Q2 -->
+    <div class="q-card">
+        <div class="q-number">Întrebarea 02</div>
+        <div class="q-text">Care este numele tău de familie?</div>
+        <p class="q-note">* Nu este un scam. Chiar nu este o pagina facuta de mine sa aflu numele</p>
+        <input type="text" id="q2" placeholder="ex: Popescu, Ionescu, Dracula..." />
+    </div>
+
+    <!-- Q3 -->
+    <div class="q-card">
+        <div class="q-number">Întrebarea 03</div>
+        <div class="q-text">ai face sex cu papi</div>
+        <div class="options" id="q3">
+            <div class="opt" onclick="pick('q3',this,'Pisică')">
+                <div class="opt-dot"><div class="opt-dot-fill"></div></div>
+                DA
             </div>
-            <div class="form-group">
-                <label class="form-label">Parolă</label>
-                <input class="form-input" id="login-pass" type="password" placeholder="Introdu parola" value="admin123"/>
+            <div class="opt" onclick="pick('q3',this,'Papagal')">
+                <div class="opt-dot"><div class="opt-dot-fill"></div></div>
+                DA
             </div>
-            <button class="btn btn-primary" style="width:100%;justify-content:center;padding:11px" onclick="doLogin()">Autentificare</button>
-            <div id="login-err" style="color:var(--red);font-size:12px;text-align:center;display:none">Utilizator sau parolă greșite</div>
-        </div>
-        <div style="margin-top:20px;padding:12px;background:var(--bg3);border-radius:8px;font-size:11px;color:var(--text3)">
-            <div style="font-weight:600;margin-bottom:4px;color:var(--text2)">Conturi demo:</div>
-            admin / admin123 &nbsp;|&nbsp; employee / emp123 &nbsp;|&nbsp; viewer / view123
+            <div class="opt" onclick="pick('q3',this,'Urs')">
+                <div class="opt-dot"><div class="opt-dot-fill"></div></div>
+               DA
+            </div>
+            <div class="opt" onclick="pick('q3',this,'Delfin')">
+                <div class="opt-dot"><div class="opt-dot-fill"></div></div>
+               DA
+            </div>
         </div>
     </div>
-</div>
 
-<!-- APP SHELL -->
-<div id="app" style="display:none">
-    <!-- Sidebar overlay for mobile -->
-    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
-
-    <!-- SIDEBAR -->
-    <nav id="sidebar">
-        <div class="sidebar-logo">
-            <div class="logo-mark">SC</div>
-            <div class="logo-text">Stock<span>Command Scule</span></div>
-        </div>
-        <div class="sidebar-nav">
-            <div class="nav-section-label">General</div>
-            <div class="nav-item active" data-page="dashboard" onclick="navigate('dashboard')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-                <span>Panou general</span>
+    <!-- Q4 -->
+    <div class="q-card">
+        <div class="q-number">Întrebarea 04</div>
+        <div class="q-text">Care este teoria ta despre de ce dispare mereu o șosetă la spălat?</div>
+        <div class="options" id="q4">
+            <div class="opt" onclick="pick('q4',this,'Portale')">
+                <div class="opt-dot"><div class="opt-dot-fill"></div></div>
+                🌀 Mașina are portale spre altă dimensiune
             </div>
-            <div class="nav-item" data-page="survey" onclick="navigate('survey')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M9 11l3 3L22 4"/>
-                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
-                </svg>
-                <span>Chestionar</span>
+            <div class="opt" onclick="pick('q4',this,'Elfi')">
+                <div class="opt-dot"><div class="opt-dot-fill"></div></div>
+                🧝 Elfii le colectează pe ascuns (nimeni nu i-a prins încă)
             </div>
-            <div class="nav-section-label">Stoc</div>
-            <div class="nav-item" data-page="products" onclick="navigate('products')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
-                <span>Produse</span>
+            <div class="opt" onclick="pick('q4',this,'Conspirație')">
+                <div class="opt-dot"><div class="opt-dot-fill"></div></div>
+                🏭 E o conspirație globală a fabricanților de șosete
             </div>
-            <div class="nav-item" data-page="reception" onclick="navigate('reception')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-                <span>Recepție marfă</span>
-            </div>
-            <div class="nav-item" data-page="movements" onclick="navigate('movements')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3l4 4-4 4"/><path d="M21 7H9"/><path d="M7 21l-4-4 4-4"/><path d="M3 17h12"/></svg>
-                <span>Mișcări stoc</span>
-            </div>
-            <div class="nav-section-label">Documente</div>
-            <div class="nav-item" data-page="invoices" onclick="navigate('invoices')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
-                <span>Facturi</span>
-            </div>
-            <div class="nav-item" data-page="suppliers" onclick="navigate('suppliers')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-                <span>Furnizori</span>
-            </div>
-            <div class="nav-item" data-page="scanner" onclick="navigate('scanner')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="4" height="10"/><rect x="8.5" y="7" width="2" height="10"/><rect x="12" y="7" width="3" height="10"/><rect x="16.5" y="7" width="1.5" height="10"/><rect x="19" y="7" width="2" height="10"/><path d="M1 5h22M1 19h22"/></svg>
-                <span>Scanner coduri</span>
-            </div>
-            <div class="nav-section-label">Analiză</div>
-            <div class="nav-item" data-page="reports" onclick="navigate('reports')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
-                <span>Rapoarte</span>
-            </div>
-            <div class="nav-item" data-page="alerts" onclick="navigate('alerts')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-                <span>Alerte stoc</span>
-                <span class="nav-badge" id="alert-badge">0</span>
-            </div>
-            <div class="nav-item" id="nav-users" data-page="users" onclick="navigate('users')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                <span>Utilizatori</span>
-            </div>
-            <div class="nav-item" data-page="activity" onclick="navigate('activity')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                <span>Jurnal activitate</span>
+            <div class="opt" onclick="pick('q4',this,'Haos pur')">
+                <div class="opt-dot"><div class="opt-dot-fill"></div></div>
+                🌪️ Universul e pur și simplu haos, acceptă-l
             </div>
         </div>
-        <div class="sidebar-footer">
-            <div class="user-card">
-                <div class="user-avatar" id="user-avatar-small" style="background:var(--accent-dim);color:var(--accent)">A</div>
-                <div class="user-info">
-                    <div class="user-name" id="user-name-small">Admin</div>
-                    <div class="user-role" id="user-role-small">admin</div>
-                </div>
-                <button onclick="logout()" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:4px" title="Deconectare">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                </button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- MAIN -->
-    <div id="main">
-        <!-- Topbar -->
-        <div id="topbar">
-            <button class="topbar-btn" id="sidebar-toggle" onclick="toggleSidebar()">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-            </button>
-            <div class="topbar-title" id="page-title">Panou general</div>
-            <div class="topbar-search">
-                <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                <input type="text" placeholder="Căutare rapidă produse..." id="global-search" oninput="globalSearch(this.value)" autocomplete="off"/>
-            </div>
-            <button class="topbar-btn" onclick="toggleTheme()">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="theme-icon"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
-            </button>
-            <button class="notif-btn" onclick="navigate('alerts')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-                <span class="notif-dot" id="notif-dot" style="display:none"></span>
-            </button>
-        </div>
-
-        <!-- CONTENT AREA -->
-        <div id="content"></div>
     </div>
+
+    <!-- Q5 -->
+    <div class="q-card">
+        <div class="q-number">Întrebarea 05</div>
+        <div class="q-text">Pe o scară de la 1 la 5, cât de des te prefaci că nu auzi când te strigă cineva?</div>
+        <div class="stars-wrap">
+            <span class="star" onclick="setStar(1)">★</span>
+            <span class="star" onclick="setStar(2)">★</span>
+            <span class="star" onclick="setStar(3)">★</span>
+            <span class="star" onclick="setStar(4)">★</span>
+            <span class="star" onclick="setStar(5)">★</span>
+            <span class="star-label" id="star-label">— niciun răspuns</span>
+        </div>
+    </div>
+
 </div>
 
-<!-- TOAST -->
-<div id="toast-container"></div>
+<div class="submit-wrap">
+    <button class="btn-submit" onclick="submitQuiz()">Trimite răspunsurile oficiale →</button>
+</div>
 
-<!-- MODAL CONTAINER -->
-<div id="modal-container"></div>
+<div id="result">
+    <div class="res-icon" id="res-icon">🎉</div>
+    <div class="res-title" id="res-title">Mulțumim pentru sinceritate!</div>
+    <div class="res-text" id="res-text">Răspunsurile tale au fost analizate de o echipă de experți.</div>
+    <div class="res-details" id="res-details"></div>
+</div>
+
+<p class="footer-note">© Institutul Național de Întrebări Inutile · Toate drepturile rezervate (mai ales cel de a fi stupid)</p>
 
 <script>
-    // ═══════════════════════════════════════════════════════════════════
-    // STATE & DATA
-    // ═══════════════════════════════════════════════════════════════════
-    let currentUser = null;
-    let currentPage = 'dashboard';
-    let isDark = true;
+    let starVal = 0;
+    let picks = {};
 
-    const DEFAULT_USERS = [
-      {id:1,username:'admin',password:'admin123',role:'admin',name:'Admin',color:'#ff7a00'},
-      {id:2,username:'magazie',password:'magazie123',role:'employee',name:'Operator magazie',color:'#27c46b'},
-      {id:3,username:'vizitator',password:'vizitator',role:'viewer',name:'Vizitator',color:'#7c5cff'},
-    ];
-
-    let users = loadState('users', DEFAULT_USERS);
-    let surveyResponses = loadState('surveyResponses', []);
-
-    // Load from localStorage or use defaults
-    function loadState(key, def) {
-      try { const s = localStorage.getItem('sc_'+key); return s ? JSON.parse(s) : def; }
-      catch(e) { return def; }
-    }
-    function saveState(key, val) {
-      try { localStorage.setItem('sc_'+key, JSON.stringify(val)); } catch(e){}
+    function pick(group, el, val) {
+      document.querySelectorAll('#' + group + ' .opt').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      picks[group] = val;
     }
 
-    let products = loadState('products', [
-      {id:1,name:'USB-C Cable 2m',brand:'Anker',code:'ANK-UC2M',barcode:'5901234123457',category:'Electronics',buyPrice:8.5,sellPrice:18.99,stock:120,unit:'pcs',description:'High-speed USB-C cable 2m',image:null,createdAt:'2025-01-10',lowStockAlert:20},
-      {id:2,name:'Wireless Mouse',brand:'Logitech',code:'LOG-WM100',barcode:'5901234123458',category:'Electronics',buyPrice:22,sellPrice:45,stock:8,unit:'pcs',description:'Ergonomic 2.4GHz wireless mouse',image:null,createdAt:'2025-01-12',lowStockAlert:15},
-      {id:3,name:'A4 Paper Ream',brand:'IQ',code:'IQ-A4-80',barcode:'5901234123459',category:'Office Supplies',buyPrice:4.2,sellPrice:8.5,stock:340,unit:'pcs',description:'80g/m² A4 paper 500 sheets',image:null,createdAt:'2025-01-15',lowStockAlert:50},
-      {id:4,name:'Ballpoint Pens 10pk',brand:'BIC',code:'BIC-BP10',barcode:'5901234123460',category:'Office Supplies',buyPrice:1.2,sellPrice:3.5,stock:5,unit:'pcs',description:'Blue ballpoint pens, 10-pack',image:null,createdAt:'2025-02-01',lowStockAlert:20},
-      {id:5,name:'Safety Helmet',brand:'3M',code:'3M-SH200',barcode:'5901234123461',category:'Tools',buyPrice:18,sellPrice:38,stock:45,unit:'pcs',description:'Industrial safety helmet white',image:null,createdAt:'2025-02-10',lowStockAlert:10},
-      {id:6,name:'Laptop Stand Aluminium',brand:'Nexstand',code:'NEX-LS100',barcode:'5901234123462',category:'Electronics',buyPrice:35,sellPrice:79,stock:2,unit:'pcs',description:'Adjustable aluminium laptop stand',image:null,createdAt:'2025-02-15',lowStockAlert:5},
-      {id:7,name:'Mechanical Keyboard',brand:'Keychron',code:'KEY-K2V2',barcode:'5901234123463',category:'Electronics',buyPrice:75,sellPrice:149,stock:30,unit:'pcs',description:'TKL wireless mechanical keyboard',image:null,createdAt:'2025-03-01',lowStockAlert:10},
-      {id:8,name:'Box Cutter Knife',brand:'Stanley',code:'STA-BC10',barcode:'5901234123464',category:'Tools',buyPrice:3.5,sellPrice:8.99,stock:55,unit:'pcs',description:'Heavy-duty box cutter knife',image:null,createdAt:'2025-03-05',lowStockAlert:15},
-    ]);
+    const starLabels = ['', 'niciodată (mincinos)', 'rareori (suspicious)', 'câteodată (normal)', 'des (campion)', 'mereu (talent rar)'];
 
-    let categories = loadState('categories', ['Electronics','Office Supplies','Tools','Clothing','Food & Beverage','Other']);
-    let suppliers = loadState('suppliers', [
-      {id:1,name:'TechDistrib SRL',contact:'office@techdistrib.ro',phone:'+40 721 000 001',address:'Cluj-Napoca, str. Industriei 5'},
-      {id:2,name:'GlobalParts SA',contact:'orders@globalparts.com',phone:'+40 722 000 002',address:'Bucharest, bd. Unirii 100'},
-      {id:3,name:'LocalSupply SRL',contact:'info@localsupply.ro',phone:'+40 723 000 003',address:'Satu Mare, str. Careiului 12'},
-    ]);
-    let movements = loadState('movements', [
-      {id:1,productId:1,type:'IN',qty:50,date:'2025-03-01',user:'admin',note:'Initial stock'},
-      {id:2,productId:2,type:'OUT',qty:5,date:'2025-03-05',user:'employee',note:'Sale order'},
-      {id:3,productId:3,type:'IN',qty:200,date:'2025-03-10',user:'admin',note:'Restock from supplier'},
-      {id:4,productId:4,type:'OUT',qty:10,date:'2025-03-12',user:'employee',note:'Customer order'},
-      {id:5,productId:7,type:'IN',qty:30,date:'2025-03-15',user:'admin',note:'New stock arrival'},
-    ]);
-    let invoices = loadState('invoices', [
-      {id:1,supplier:'TechDistrib SRL',invoiceNo:'INV-2025-001',date:'2025-03-01',items:[{productId:1,qty:50,price:8.5}],total:425,status:'received',note:''},
-      {id:2,supplier:'LocalSupply SRL',invoiceNo:'INV-2025-002',date:'2025-03-15',items:[{productId:7,qty:30,price:75}],total:2250,status:'received',note:'Express delivery'},
-    ]);
-    let activityLog = loadState('activityLog', [
-      {id:1,user:'admin',action:'Login',detail:'System access',date:'2025-03-01 08:00'},
-      {id:2,user:'admin',action:'Product Created',detail:'USB-C Cable 2m',date:'2025-03-01 08:15'},
-      {id:3,user:'employee',action:'Invoice Received',detail:'INV-2025-001',date:'2025-03-01 09:00'},
-    ]);
-
-    let idCounters = loadState('idCounters', {products:9,suppliers:4,invoices:3,movements:6,activity:4});
-
-    function nextId(type){ idCounters[type]++; saveState('idCounters',idCounters); return idCounters[type]; }
-    function persist(){
-      saveState('users',users);
-      saveState('products',products);
-      saveState('categories',categories);
-      saveState('suppliers',suppliers);
-      saveState('movements',movements);
-      saveState('invoices',invoices);
-      saveState('activityLog',activityLog);
-      saveState('surveyResponses',surveyResponses);
+    function setStar(n) {
+      starVal = n;
+      document.querySelectorAll('.star').forEach((s, i) => s.classList.toggle('lit', i < n));
+      document.getElementById('star-label').textContent = '— ' + starLabels[n];
     }
 
-    function logActivity(action, detail){
-      activityLog.unshift({id:nextId('activity'),user:currentUser?.username||'system',action,detail,date:new Date().toLocaleString('sv').slice(0,16)});
-      if(activityLog.length>200) activityLog=activityLog.slice(0,200);
-      persist();
-    }
+    function submitQuiz() {
+      const name = document.getElementById('q1').value.trim() || 'Anonim';
+      const surname = document.getElementById('q2').value.trim() || '(refuzi să spui)';
 
-    // ═══════════════════════════════════════════════════════════════════
-    // AUTH
-    // ═══════════════════════════════════════════════════════════════════
-    function doLogin(){
-      const u = document.getElementById('login-user').value.trim();
-      const p = document.getElementById('login-pass').value.trim();
-      const found = users.find(x=>x.username===u&&x.password===p);
-      if(!found){ document.getElementById('login-err').style.display='block'; return; }
-      currentUser = found;
-      document.getElementById('login-screen').style.display='none';
-      document.getElementById('app').style.display='flex';
-      document.getElementById('user-name-small').textContent=found.name;
-      document.getElementById('user-role-small').textContent=found.role;
-      document.getElementById('user-avatar-small').textContent=found.name[0];
-      document.getElementById('user-avatar-small').style.background=found.color+'22';
-      document.getElementById('user-avatar-small').style.color=found.color;
-      if(found.role!=='admin') document.getElementById('nav-users').style.display='none';
-      logActivity('Login','User logged in');
-      navigate('dashboard');
-      updateAlertBadge();
-      document.getElementById('login-user').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
-      document.getElementById('login-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
-    }
-    document.getElementById('login-user').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
-    document.getElementById('login-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
-    function logout(){
-      logActivity('Logout','User logged out');
-      currentUser=null;
-      document.getElementById('login-screen').style.display='flex';
-      document.getElementById('app').style.display='none';
-    }
-    function canEdit(){ return currentUser&&(currentUser.role==='admin'||currentUser.role==='employee'); }
-    function isAdmin(){ return currentUser&&currentUser.role==='admin'; }
+      const icons = ['🎉','🏆','🦆','🌟','🎯'];
+      const icon = icons[Math.floor(Math.random() * icons.length)];
 
-    // ═══════════════════════════════════════════════════════════════════
-    // NAVIGATION
-    // ═══════════════════════════════════════════════════════════════════
-    function navigate(page){
-      currentPage=page;
-      document.querySelectorAll('.nav-item').forEach(el=>el.classList.toggle('active',el.dataset.page===page));
-      document.getElementById('page-title').textContent={
-        dashboard:'Panou general',products:'Produse',reception:'Recepție marfă',
-        movements:'Mișcări stoc',invoices:'Facturi',suppliers:'Furnizori',
-        scanner:'Scanner coduri',reports:'Rapoarte & export',alerts:'Alerte stoc',
-        users:'Administrare utilizatori',activity:'Jurnal activitate',
-        survey:'Chestionar'
-      }[page]||page;
-      const content=document.getElementById('content');
-      content.innerHTML='<div style="color:var(--text3);padding:20px">Se încarcă...</div>';
-      closeSidebar();
-      setTimeout(()=>{ PAGE_RENDERERS[page]&&PAGE_RENDERERS[page](); },10);
-    }
-    function toggleSidebar(){
-      const s=document.getElementById('sidebar');
-      if(window.innerWidth<=768){ s.classList.toggle('mobile-open'); document.getElementById('sidebar-overlay').style.display=s.classList.contains('mobile-open')?'block':'none'; }
-      else s.classList.toggle('collapsed');
-    }
-    function closeSidebar(){
-      const s=document.getElementById('sidebar');
-      if(window.innerWidth<=768){ s.classList.remove('mobile-open'); document.getElementById('sidebar-overlay').style.display='none'; }
-    }
+      const msgs = [
+        `Bravo, ${name}! Profilul tău psihologic e... interesant.`,
+        `${name}, ești un exemplu pentru toată România.`,
+        `Felicitări, ${name}! Ai completat cel mai inutil chestionar din 2025.`,
+      ];
 
-    // ═══════════════════════════════════════════════════════════════════
-    // THEME
-    // ═══════════════════════════════════════════════════════════════════
-    function toggleTheme(){
-      isDark=!isDark;
-      document.documentElement.setAttribute('data-theme',isDark?'dark':'light');
-    }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // TOAST
-    // ═══════════════════════════════════════════════════════════════════
-    function toast(msg, type='info', dur=3000){
-      const icons={success:'✓',error:'✕',info:'ℹ',warning:'⚠'};
-      const t=document.createElement('div');
-      t.className=`toast ${type}`;
-      t.innerHTML=`<span style="font-size:16px">${icons[type]||'ℹ'}</span><span style="flex:1">${msg}</span>`;
-      document.getElementById('toast-container').appendChild(t);
-      setTimeout(()=>{ t.style.animation='slideOut 0.25s ease forwards'; setTimeout(()=>t.remove(),250); },dur);
-    }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // MODAL
-    // ═══════════════════════════════════════════════════════════════════
-    function openModal(html, size=''){
-      const c=document.getElementById('modal-container');
-      c.innerHTML=`<div class="modal-overlay open" id="active-modal" onclick="if(event.target===this)closeModal()"><div class="modal ${size}">${html}</div></div>`;
-    }
-    function closeModal(){ const m=document.getElementById('active-modal'); if(m){m.classList.remove('open');setTimeout(()=>m.remove(),200);} }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // ALERTS
-    // ═══════════════════════════════════════════════════════════════════
-    function getLowStock(){ return products.filter(p=>p.stock<=p.lowStockAlert); }
-    function updateAlertBadge(){
-      const n=getLowStock().length;
-      document.getElementById('alert-badge').textContent=n;
-      document.getElementById('notif-dot').style.display=n>0?'block':'none';
-    }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // GLOBAL SEARCH
-    // ═══════════════════════════════════════════════════════════════════
-    function globalSearch(q){
-      if(!q.trim()){ return; }
-      navigate('products');
-      setTimeout(()=>{
-        const si=document.getElementById('prod-search');
-        if(si){ si.value=q; filterProducts(); }
-      },50);
-    }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // HELPERS
-    // ═══════════════════════════════════════════════════════════════════
-    function fmt(n, dec=2){ return (Math.round(n*(10**dec))/(10**dec)).toLocaleString('ro-RO',{minimumFractionDigits:dec,maximumFractionDigits:dec}); }
-    function fmtDate(d){ return d||'—'; }
-    function stockColor(p){ if(p.stock===0)return 'red'; if(p.stock<=p.lowStockAlert)return 'amber'; return 'green'; }
-    function stockPct(p){ const max=Math.max(p.stock*1.5,p.lowStockAlert*3,1); return Math.min(100,(p.stock/max)*100); }
-    function getProduct(id){ return products.find(p=>p.id===id); }
-    function getSupplier(name){ return suppliers.find(s=>s.name===name); }
-    function categoryColor(cat){ const colors={'Electronics':'accent','Office Supplies':'green','Tools':'amber','Clothing':'violet','Food & Beverage':'red','Other':'gray'}; return colors[cat]||'gray'; }
-
-    function svgIcon(name){
-      const icons={
-        edit:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
-        trash:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>`,
-        eye:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`,
-        plus:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
-        download:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`,
-      };
-      return icons[name]||'';
-    }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // PAGE: DASHBOARD
-    // ═══════════════════════════════════════════════════════════════════
-    const PAGE_RENDERERS = {};
-
-    // ═══════════════════════════════════════════════════════════════════
-    // PAGE: SURVEY (local-only)
-    // ═══════════════════════════════════════════════════════════════════
-    PAGE_RENDERERS.survey = function(){
-      const total = surveyResponses.length;
-      const recent = surveyResponses.slice().sort((a,b)=> (b.ts||'').localeCompare(a.ts||'')).slice(0,12);
-
-      document.getElementById('content').innerHTML = `
-      <div class="section-head">
-        <h1>Chestionar (stare de bine)</h1>
-        <span class="badge gray">${total} răspunsuri salvate pe acest dispozitiv</span>
-        ${isAdmin() ? `<button class="btn btn-ghost btn-sm" onclick="exportSurveyCSV()">${svgIcon('download')} Export CSV</button>` : ``}
-        ${isAdmin() && total>0 ? `<button class="btn btn-danger btn-sm" onclick="if(confirm('Ștergi toate răspunsurile salvate local?')){surveyResponses=[];persist();PAGE_RENDERERS.survey();toast('Răspunsuri șterse','success')}">Șterge</button>` : ``}
-      </div>
-
-      <div class="table-wrap" style="margin-bottom:16px">
-        <div class="table-header"><div class="table-title">Notă importantă</div></div>
-        <div style="padding:18px 20px;color:var(--text2);font-size:13px;line-height:1.65">
-          <div style="font-weight:700;color:var(--text);margin-bottom:6px">Transparență & confidențialitate</div>
-          <ul style="margin-left:18px;display:grid;gap:6px">
-            <li>Chestionarul este pentru <b>scop informativ</b> și nu înlocuiește sfatul medical.</li>
-            <li>Răspunsurile se salvează <b>doar în browser</b> (localStorage) pe acest dispozitiv, fără trimitere automată către un server.</li>
-            <li>Numele este <b>opțional</b>. Completează doar dacă vrei.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="table-wrap" style="margin-bottom:16px">
-        <div class="table-header"><div class="table-title">Completează chestionarul</div></div>
-        <div style="padding:20px">
-          <div class="form-grid cols3">
-            <div class="form-group">
-              <label class="form-label">Prenume (opțional)</label>
-              <input class="form-input" id="sv-firstName" placeholder="Ex. Andrei" autocomplete="given-name"/>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Nume (opțional)</label>
-              <input class="form-input" id="sv-lastName" placeholder="Ex. Popescu" autocomplete="family-name"/>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Vârstă (interval)</label>
-              <select class="form-input" id="sv-age">
-                <option value="">Alege…</option>
-                <option>sub 18</option>
-                <option>18–24</option>
-                <option>25–34</option>
-                <option>35–44</option>
-                <option>45–54</option>
-                <option>55–64</option>
-                <option>65+</option>
-              </select>
-            </div>
-
-            <div class="form-group full">
-              <label class="form-label">Cum te simți azi? (1 = foarte rău, 5 = foarte bine)</label>
-              <div style="display:flex;gap:10px;flex-wrap:wrap">
-                ${[1,2,3,4,5].map(n=>`
-                  <label style="display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:var(--bg3);cursor:pointer">
-                    <input type="radio" name="sv-wellbeing" value="${n}" style="accent-color:var(--accent)"/>
-                    <span style="font-weight:700">${n}</span>
-                  </label>
-                `).join('')}
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Ore de somn (noaptea trecută)</label>
-              <input class="form-input" id="sv-sleep" type="number" min="0" max="24" step="0.5" placeholder="Ex. 7.5"/>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Nivel de stres (0–10)</label>
-              <input class="form-input" id="sv-stress" type="number" min="0" max="10" step="1" placeholder="Ex. 4"/>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Motiv principal (opțional)</label>
-              <select class="form-input" id="sv-reason">
-                <option value="">Alege…</option>
-                <option>Somn</option>
-                <option>Muncă/școală</option>
-                <option>Sănătate fizică</option>
-                <option>Sănătate mentală</option>
-                <option>Altele</option>
-              </select>
-            </div>
-
-            <div class="form-group full">
-              <label class="form-label">Observații (opțional)</label>
-              <textarea class="form-input" id="sv-notes" placeholder="Scrie orice consideri util…"></textarea>
-            </div>
-
-            <div class="form-group full">
-              <label style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:var(--bg3);cursor:pointer">
-                <input type="checkbox" id="sv-consent" style="margin-top:3px;accent-color:var(--accent)"/>
-                <div style="font-size:12px;color:var(--text2);line-height:1.5">
-                  Confirm că am înțeles nota de mai sus și sunt de acord ca răspunsurile mele să fie salvate local pe acest dispozitiv.
-                </div>
-              </label>
-            </div>
-          </div>
-
-          <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap">
-            <button class="btn btn-ghost" onclick="resetSurveyForm()">Reset</button>
-            <button class="btn btn-primary" onclick="submitSurvey()">Trimite</button>
-          </div>
-        </div>
-      </div>
-
-      ${isAdmin() ? `
-      <div class="table-wrap">
-        <div class="table-header"><div class="table-title">Răspunsuri recente (admin)</div></div>
-        <div class="table-scroll">
-          <table class="data-table">
-            <thead><tr><th>Dată</th><th>Nume</th><th>Vârstă</th><th>Stare</th><th>Somn</th><th>Stres</th><th>Motiv</th></tr></thead>
-            <tbody>
-              ${recent.length===0 ? `<tr><td colspan="7"><div class="empty-state"><h3>Nu există răspunsuri</h3><p>Completează chestionarul ca să apară aici.</p></div></td></tr>` : recent.map(r=>`
-                <tr>
-                  <td class="mono" style="color:var(--text3);font-size:12px">${(r.ts||'—').replace('T',' ').slice(0,19)}</td>
-                  <td>${[r.lastName,r.firstName].filter(Boolean).join(' ')||'—'}</td>
-                  <td><span class="tag">${r.age||'—'}</span></td>
-                  <td><span class="badge ${r.wellbeing>=4?'green':(r.wellbeing<=2?'red':'amber')}">${r.wellbeing||'—'}</span></td>
-                  <td>${(r.sleepHours ?? '—')}</td>
-                  <td>${(r.stress ?? '—')}</td>
-                  <td>${r.reason||'—'}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      ` : ``}
+      const details = document.getElementById('res-details');
+      details.innerHTML = `
+        <div class="res-row">Nume complet: <span>${name} ${surname}</span></div>
+        ${picks.q3 ? `<div class="res-row">Animal interior: <span>${picks.q3}</span></div>` : ''}
+        ${picks.q4 ? `<div class="res-row">Teoria șosetei: <span>${picks.q4}</span></div>` : ''}
+        ${starVal > 0 ? `<div class="res-row">Ignorare deliberată: <span>${starVal}/5 stele (${starLabels[starVal]})</span></div>` : ''}
       `;
-    };
 
-    function resetSurveyForm(){
-      const ids = ['sv-firstName','sv-lastName','sv-age','sv-sleep','sv-stress','sv-reason','sv-notes','sv-consent'];
-      ids.forEach(id=>{
-        const el=document.getElementById(id);
-        if(!el) return;
-        if(el.type==='checkbox') el.checked=false;
-        else el.value='';
-      });
-      document.querySelectorAll('input[name="sv-wellbeing"]').forEach(el=>{ el.checked=false; });
+      document.getElementById('res-icon').textContent = icon;
+      document.getElementById('res-title').textContent = msgs[Math.floor(Math.random() * msgs.length)];
+      document.getElementById('res-text').textContent = 'Datele tale sunt stocate în siguranță pe un server din Siberia. Nu te îngrijora.';
+
+      const res = document.getElementById('result');
+      res.style.display = 'block';
+      setTimeout(() => res.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
     }
-
-    function submitSurvey(){
-      const consent = document.getElementById('sv-consent')?.checked;
-      if(!consent){ toast('Te rog bifează consimțământul.','warning'); return; }
-
-      const wellbeingEl = document.querySelector('input[name="sv-wellbeing"]:checked');
-      const wellbeing = wellbeingEl ? Number(wellbeingEl.value) : null;
-
-      const firstName = document.getElementById('sv-firstName').value.trim();
-      const lastName = document.getElementById('sv-lastName').value.trim();
-      const age = document.getElementById('sv-age').value;
-      const sleepHoursRaw = document.getElementById('sv-sleep').value;
-      const stressRaw = document.getElementById('sv-stress').value;
-      const reason = document.getElementById('sv-reason').value;
-      const notes = document.getElementById('sv-notes').value.trim();
-
-      const sleepHours = sleepHoursRaw==='' ? null : Number(sleepHoursRaw);
-      const stress = stressRaw==='' ? null : Number(stressRaw);
-
-      if(!age && wellbeing==null && sleepHours==null && stress==null && !reason && !notes && !firstName && !lastName){
-        toast('Completează măcar un câmp înainte de trimitere.','warning');
-        return;
-      }
-
-      surveyResponses.push({
-        ts: new Date().toISOString(),
-        by: currentUser ? currentUser.username : 'anon',
-        firstName: firstName || null,
-        lastName: lastName || null,
-        age: age || null,
-        wellbeing,
-        sleepHours,
-        stress,
-        reason: reason || null,
-        notes: notes || null,
-      });
-      persist();
-      toast('Răspuns salvat local. Mulțumim!','success');
-      resetSurveyForm();
-      if(isAdmin()) PAGE_RENDERERS.survey();
-    }
-
-    function exportSurveyCSV(){
-      if(!isAdmin()){ toast('Doar admin poate exporta.','warning'); return; }
-      if(!surveyResponses.length){ toast('Nu există răspunsuri de exportat.','info'); return; }
-
-      const esc = (v) => {
-        if(v==null) return '';
-        const s = String(v);
-        if(/[",\n]/.test(s)) return `"${s.replace(/"/g,'""')}"`;
-        return s;
-      };
-      const header = ['ts','by','lastName','firstName','age','wellbeing','sleepHours','stress','reason','notes'];
-      const rows = surveyResponses.map(r => header.map(k=>esc(r[k])).join(','));
-      const csv = [header.join(','), ...rows].join('\n');
-
-      const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `survey-responses-${new Date().toISOString().slice(0,10)}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 0);
-      toast('CSV generat.','success');
-    }
-
-    PAGE_RENDERERS.dashboard = function(){
-      const totalVal = products.reduce((s,p)=>s+p.stock*p.buyPrice,0);
-      const totalSell = products.reduce((s,p)=>s+p.stock*p.sellPrice,0);
-      const lowStockItems = getLowStock();
-      const totalUnits = products.reduce((s,p)=>s+p.stock,0);
-      const catData = {};
-      products.forEach(p=>{ catData[p.category]=(catData[p.category]||0)+p.stock*p.buyPrice; });
-      const catKeys = Object.keys(catData).sort((a,b)=>catData[b]-catData[a]).slice(0,6);
-      const maxCatVal = Math.max(...catKeys.map(k=>catData[k]),1);
-      const recentMov = movements.slice().sort((a,b)=>b.id-a.id).slice(0,6);
-
-      document.getElementById('content').innerHTML = `
-      <div class="section-head">
-        <h1>Panou general</h1>
-        <span style="font-size:12px;color:var(--text3)">${new Date().toLocaleDateString('ro-RO',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</span>
-      </div>
-      <div class="stat-grid">
-        <div class="stat-card accent">
-          <div class="stat-icon accent"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
-          <div class="stat-val">€${fmt(totalVal)}</div>
-          <div class="stat-label">Valoare stoc (cost)</div>
-          <div class="stat-sub">Valoare vânzare: €${fmt(totalSell)}</div>
-        </div>
-        <div class="stat-card green">
-          <div class="stat-icon green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></div>
-          <div class="stat-val">${products.length}</div>
-          <div class="stat-label">Produse în stoc</div>
-          <div class="stat-sub">${totalUnits.toLocaleString()} bucăți totale</div>
-        </div>
-        <div class="stat-card red">
-          <div class="stat-icon red"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></div>
-          <div class="stat-val">${lowStockItems.length}</div>
-          <div class="stat-label">Alerte stoc mic</div>
-          <div class="stat-sub">${products.filter(p=>p.stock===0).length} produse epuizate</div>
-        </div>
-        <div class="stat-card amber">
-          <div class="stat-icon amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
-          <div class="stat-val">${invoices.length}</div>
-          <div class="stat-label">Facturi</div>
-          <div class="stat-sub">${suppliers.length} furnizori activi</div>
-        </div>
-      </div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px">
-        <!-- Category Chart -->
-        <div class="table-wrap">
-          <div class="table-header"><div class="table-title">Valoare pe categorie</div></div>
-          <div style="padding:20px">
-            ${catKeys.map(k=>`
-            <div style="margin-bottom:14px">
-              <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:12px">
-                <span style="color:var(--text2)">${k}</span>
-                <span class="mono" style="color:var(--accent)">€${fmt(catData[k])}</span>
-              </div>
-              <div style="height:6px;background:var(--bg4);border-radius:3px;overflow:hidden">
-                <div style="height:100%;width:${(catData[k]/maxCatVal*100).toFixed(1)}%;background:linear-gradient(90deg,var(--accent),var(--violet));border-radius:3px;transition:width 0.6s ease"></div>
-              </div>
-            </div>`).join('')}
-          </div>
-        </div>
-        <!-- Low Stock -->
-        <div class="table-wrap">
-          <div class="table-header">
-            <div class="table-title">⚠ Produse cu stoc mic</div>
-            <button class="btn btn-ghost btn-sm" onclick="navigate('alerts')">Vezi toate</button>
-          </div>
-          <div style="padding:12px 16px">
-            ${lowStockItems.length===0?`<div class="empty-state" style="padding:24px"><div style="font-size:28px;margin-bottom:8px">✓</div><div style="font-size:13px;color:var(--green)">Toate stocurile sunt în regulă</div></div>`
-            :lowStockItems.slice(0,6).map(p=>`
-            <div class="alert-item ${p.stock===0?'':'amber'}" style="margin-bottom:8px">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-              <div style="flex:1">
-                <div style="font-size:13px;font-weight:600">${p.name}</div>
-                <div style="font-size:11px;color:var(--text3)">${p.stock===0?'STOC EPUIZAT':`Doar ${p.stock} rămase (minim: ${p.lowStockAlert})`}</div>
-              </div>
-              <span class="badge ${p.stock===0?'red':'amber'}">${p.stock} ${p.unit}</span>
-            </div>`).join('')}
-          </div>
-        </div>
-      </div>
-
-      <!-- Recent Movements -->
-      <div class="table-wrap">
-        <div class="table-header">
-          <div class="table-title">Mișcări de stoc recente</div>
-          <button class="btn btn-ghost btn-sm" onclick="navigate('movements')">Vezi toate</button>
-        </div>
-        <div class="table-scroll">
-          <table class="data-table">
-            <thead><tr><th>Produs</th><th>Tip</th><th>Cant.</th><th>Dată</th><th>Utilizator</th><th>Notă</th></tr></thead>
-            <tbody>
-              ${recentMov.length===0?`<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:24px">Nu există încă mișcări</td></tr>`
-              :recentMov.map(m=>{const p=getProduct(m.productId);return`
-              <tr>
-                <td><span style="font-weight:500">${p?p.name:'—'}</span></td>
-                <td><span class="badge ${m.type==='IN'?'green':m.type==='OUT'?'red':'amber'}">${m.type==='IN'?'↑':m.type==='OUT'?'↓':'≈'} ${m.type}</span></td>
-                <td class="mono">${m.qty}</td>
-                <td class="mono" style="color:var(--text2)">${m.date}</td>
-                <td><span class="tag">${m.user}</span></td>
-                <td style="color:var(--text2);font-size:12px">${m.note||'—'}</td>
-              </tr>`;}).join('')}
-            </tbody>
-          </table>
-        </div>
-      </div>`;
-    };
-
-    // ═══════════════════════════════════════════════════════════════════
-    // PAGE: PRODUCTS
-    // ═══════════════════════════════════════════════════════════════════
-    let prodPage = 1;
-    const PROD_PER_PAGE = 10;
-    let filteredProds = [];
-
-    PAGE_RENDERERS.products = function(p){
-      prodPage = p||1;
-      const search = (document.getElementById('prod-search')?.value||'').toLowerCase();
-      const catF = document.getElementById('prod-cat')?.value||'';
-      const brandF = document.getElementById('prod-brand')?.value||'';
-      const sortF = document.getElementById('prod-sort')?.value||'name';
-
-      filteredProds = products.filter(p=>{
-        const matchQ = !search||(p.name.toLowerCase().includes(search)||p.code.toLowerCase().includes(search)||p.brand.toLowerCase().includes(search)||p.barcode.includes(search));
-        const matchC = !catF||p.category===catF;
-        const matchB = !brandF||p.brand===brandF;
-        return matchQ&&matchC&&matchB;
-      });
-      filteredProds.sort((a,b)=>{
-        if(sortF==='name') return a.name.localeCompare(b.name);
-        if(sortF==='stock') return b.stock-a.stock;
-        if(sortF==='value') return (b.stock*b.buyPrice)-(a.stock*a.buyPrice);
-        if(sortF==='price') return b.sellPrice-a.sellPrice;
-        return 0;
-      });
-
-      const total = filteredProds.length;
-      const pages = Math.max(1,Math.ceil(total/PROD_PER_PAGE));
-      prodPage = Math.min(prodPage, pages);
-      const slice = filteredProds.slice((prodPage-1)*PROD_PER_PAGE, prodPage*PROD_PER_PAGE);
-      const brands = [...new Set(products.map(p=>p.brand))].sort();
-
-      document.getElementById('content').innerHTML = `
-      <div class="section-head">
-        <h1>Produse</h1>
-        ${canEdit()?`<button class="btn btn-primary" onclick="openProductModal()">${svgIcon('plus')} Adaugă produs</button>`:''}
-      </div>
-      <div class="table-wrap">
-        <div class="table-header" style="flex-wrap:wrap;gap:8px">
-          <div style="position:relative;flex:1;min-width:180px">
-            <svg style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3)" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input class="form-input" id="prod-search" style="padding-left:32px" placeholder="Caută după nume, cod, cod de bare..." value="" oninput="PAGE_RENDERERS.products()"/>
-          </div>
-          <select class="form-input" id="prod-cat" style="width:auto" onchange="PAGE_RENDERERS.products()">
-            <option value="">Toate categoriile</option>
-            ${categories.map(c=>`<option value="${c}">${c}</option>`).join('')}
-          </select>
-          <select class="form-input" id="prod-brand" style="width:auto" onchange="PAGE_RENDERERS.products()">
-            <option value="">Toate mărcile</option>
-            ${brands.map(b=>`<option value="${b}">${b}</option>`).join('')}
-          </select>
-          <select class="form-input" id="prod-sort" style="width:auto" onchange="PAGE_RENDERERS.products()">
-            <option value="name">Sortare: Nume</option>
-            <option value="stock">Sortare: Stoc</option>
-            <option value="value">Sortare: Valoare</option>
-            <option value="price">Sortare: Preț</option>
-          </select>
-          <span style="font-size:12px;color:var(--text3)">${total} produse</span>
-        </div>
-        <div class="table-scroll">
-          <table class="data-table">
-            <thead><tr><th>Produs</th><th>Cod</th><th>Categorie</th><th>Achiziție</th><th>Vânzare</th><th>Stoc</th><th>Valoare</th><th>Acțiuni</th></tr></thead>
-            <tbody>
-              ${slice.length===0?`<tr><td colspan="8"><div class="empty-state"><h3>Produse negăsite</h3><p>Încearcă să modifici căutarea sau filtrele</p></div></td></tr>`
-              :slice.map(p=>`
-              <tr>
-                <td>
-                  <div style="display:flex;align-items:center;gap:10px">
-                    <div class="product-thumb">${p.image?`<img src="${p.image}"/>`:`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`}</div>
-                    <div>
-                      <div style="font-weight:600;font-size:13px">${p.name}</div>
-                      <div style="font-size:11px;color:var(--text3)">${p.brand}</div>
-                    </div>
-                  </div>
-                </td>
-                <td class="mono" style="color:var(--text2)">${p.code}</td>
-                <td><span class="badge ${categoryColor(p.category)}">${p.category}</span></td>
-                <td class="mono">€${fmt(p.buyPrice)}</td>
-                <td class="mono" style="color:var(--green)">€${fmt(p.sellPrice)}</td>
-                <td>
-                  <div style="display:flex;align-items:center;gap:8px">
-                    <div style="min-width:60px">
-                      <div class="stock-bar"><div class="stock-bar-fill" style="width:${stockPct(p)}%;background:${p.stock===0?'var(--red)':p.stock<=p.lowStockAlert?'var(--amber)':'var(--green)'}"></div></div>
-                    </div>
-                    <span class="badge ${stockColor(p)}">${p.stock} ${p.unit}</span>
-                  </div>
-                </td>
-                <td class="mono" style="color:var(--accent)">€${fmt(p.stock*p.buyPrice)}</td>
-                <td>
-                  <div style="display:flex;gap:4px">
-                    <button class="btn btn-ghost btn-sm btn-icon" onclick="viewProduct(${p.id})" title="Vizualizare">${svgIcon('eye')}</button>
-                    ${canEdit()?`<button class="btn btn-ghost btn-sm btn-icon" onclick="openProductModal(${p.id})" title="Editare">${svgIcon('edit')}</button>`:''}
-                    ${isAdmin()?`<button class="btn btn-danger btn-sm btn-icon" onclick="deleteProduct(${p.id})" title="Șterge">${svgIcon('trash')}</button>`:''}
-                  </div>
-                </td>
-              </tr>`).join('')}
-            </tbody>
-          </table>
-        </div>
-        ${renderPagination(prodPage, pages, 'PAGE_RENDERERS.products')}
-      </div>`;
-    };
-
-    function renderPagination(cur, total, fn){
-      if(total<=1) return '';
-      let btns='';
-      for(let i=1;i<=total;i++){
-        if(i===1||i===total||Math.abs(i-cur)<=1) btns+=`<div class="page-btn ${i===cur?'active':''}" onclick="${fn}(${i})">${i}</div>`;
-        else if(Math.abs(i-cur)===2) btns+=`<div style="padding:0 4px;color:var(--text3)">…</div>`;
-      }
-      return `<div class="pagination">
-        <div class="page-btn" onclick="${fn}(${Math.max(1,cur-1)})" ${cur===1?'style="opacity:0.3;pointer-events:none"':''}>‹</div>
-        ${btns}
-        <div class="page-btn" onclick="${fn}(${Math.min(total,cur+1)})" ${cur===total?'style="opacity:0.3;pointer-events:none"':''}>›</div>
-      </div>`;
-    }
-
-    function openProductModal(id){
-      if(!canEdit()){ toast('Nu ai permisiune','error'); return; }
-      const p = id ? getProduct(id) : null;
-      const title = p ? 'Editează produs' : 'Adaugă produs nou';
-      openModal(`
-      <div class="modal-head">
-        <div class="stat-icon ${p?'accent':'green'}" style="width:36px;height:36px">${svgIcon(p?'edit':'plus')}</div>
-        <h2>${title}</h2>
-        <button class="btn btn-ghost btn-sm btn-icon" onclick="closeModal()">✕</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-grid">
-          <div class="form-group"><label class="form-label">Nume produs *</label><input class="form-input" id="pf-name" value="${p?p.name:''}" placeholder="ex. Șurubelniță electrică"/></div>
-          <div class="form-group"><label class="form-label">Marcă / Producător *</label><input class="form-input" id="pf-brand" value="${p?p.brand:''}" placeholder="ex. Bosch"/></div>
-          <div class="form-group"><label class="form-label">Cod produs *</label><input class="form-input" id="pf-code" value="${p?p.code:''}" placeholder="ex. BOS-SC100"/></div>
-          <div class="form-group"><label class="form-label">Cod de bare</label><input class="form-input" id="pf-barcode" value="${p?p.barcode:''}" placeholder="Cod EAN/UPC"/></div>
-          <div class="form-group"><label class="form-label">Categorie</label>
-            <select class="form-input" id="pf-cat">
-              ${categories.map(c=>`<option value="${c}" ${p&&p.category===c?'selected':''}>${c}</option>`).join('')}
-            </select>
-          </div>
-          <div class="form-group"><label class="form-label">Unitate de măsură</label>
-            <select class="form-input" id="pf-unit">
-              ${['pcs','kg','g','l','ml','m','box','pair'].map(u=>`<option value="${u}" ${p&&p.unit===u?'selected':''}>${u}</option>`).join('')}
-            </select>
-          </div>
-          <div class="form-group"><label class="form-label">Preț achiziție (€)</label><input class="form-input" id="pf-buy" type="number" step="0.01" value="${p?p.buyPrice:''}" placeholder="0.00"/></div>
-          <div class="form-group"><label class="form-label">Preț vânzare (€)</label><input class="form-input" id="pf-sell" type="number" step="0.01" value="${p?p.sellPrice:''}" placeholder="0.00"/></div>
-          <div class="form-group"><label class="form-label">Cantitate stoc</label><input class="form-input" id="pf-stock" type="number" value="${p?p.stock:0}" placeholder="0"/></div>
-          <div class="form-group"><label class="form-label">Prag alertă stoc mic</label><input class="form-input" id="pf-alert" type="number" value="${p?p.lowStockAlert:10}" placeholder="10"/></div>
-          <div class="form-group full"><label class="form-label">Descriere</label><textarea class="form-input" id="pf-desc" placeholder="Descriere produs...">${p?p.description:''}</textarea></div>
-          <div class="form-group full"><label class="form-label">Imagine produs</label>
-            <div style="display:flex;align-items:center;gap:12px">
-              <div id="pf-img-prev" style="width:60px;height:60px;background:var(--bg3);border-radius:8px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;color:var(--text3)">
-                ${p&&p.image?`<img src="${p.image}" style="width:100%;height:100%;object-fit:cover"/>`:'📷'}
-              </div>
-              <div>
-                <input type="file" id="pf-img" accept="image/*" style="display:none" onchange="previewImg(this)"/>
-                <button class="btn btn-ghost btn-sm" onclick="document.getElementById('pf-img').click()">Încarcă imagine</button>
-                ${p&&p.image?`<button class="btn btn-danger btn-sm" onclick="document.getElementById('pf-img-prev').innerHTML='📷';window._clearImg=true" style="margin-left:6px">Elimină</button>`:''}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-foot">
-        <button class="btn btn-ghost" onclick="closeModal()">Anulează</button>
-        <button class="btn btn-primary" onclick="saveProduct(${p?p.id:'null'})">${svgIcon('plus')} ${p?'Salvează modificările':'Adaugă produs'}</button>
-      </div>`);
-    }
-
-    function previewImg(input){
-      if(input.files&&input.files[0]){
-        const r=new FileReader();
-        r.onload=e=>{ document.getElementById('pf-img-prev').innerHTML=`<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover"/>`; };
-        r.readAsDataURL(input.files[0]);
-      }
-    }
-
-    function saveProduct(id){
-      const name=document.getElementById('pf-name').value.trim();
-      const brand=document.getElementById('pf-brand').value.trim();
-      const code=document.getElementById('pf-code').value.trim();
-      if(!name||!brand||!code){ toast('Numele, marca și codul sunt obligatorii','error'); return; }
-      const imgInput=document.getElementById('pf-img');
-      const getImg=()=>new Promise(res=>{
-        if(window._clearImg){window._clearImg=false;res(null);return;}
-        if(imgInput&&imgInput.files&&imgInput.files[0]){
-          const r=new FileReader(); r.onload=e=>res(e.target.result); r.readAsDataURL(imgInput.files[0]);
-        } else { res(id?getProduct(id)?.image||null:null); }
-      });
-      getImg().then(img=>{
-        const data={
-          name,brand,code,barcode:document.getElementById('pf-barcode').value.trim(),
-          category:document.getElementById('pf-cat').value,
-          unit:document.getElementById('pf-unit').value,
-          buyPrice:parseFloat(document.getElementById('pf-buy').value)||0,
-          sellPrice:parseFloat(document.getElementById('pf-sell').value)||0,
-          stock:parseInt(document.getElementById('pf-stock').value)||0,
-          lowStockAlert:parseInt(document.getElementById('pf-alert').value)||10,
-          description:document.getElementById('pf-desc').value.trim(),
-          image:img, createdAt:new Date().toISOString().slice(0,10)
-        };
-        if(id){
-          const i=products.findIndex(p=>p.id===id);
-          products[i]={...products[i],...data};
-          logActivity('Product Updated',name);
-          toast('Produs actualizat','success');
-        } else {
-          data.id=nextId('products');
-          products.push(data);
-          logActivity('Product Created',name);
-          toast('Produs adăugat','success');
-        }
-        persist(); closeModal(); PAGE_RENDERERS.products(); updateAlertBadge();
-      });
-    }
-
-    function deleteProduct(id){
-      const p=getProduct(id);
-      if(!isAdmin()){toast('Doar administrator','error');return;}
-      openModal(`
-      <div class="modal-head"><div class="stat-icon red">${svgIcon('trash')}</div><h2>Delete Product</h2><button class="btn btn-ghost btn-sm btn-icon" onclick="closeModal()">✕</button></div>
-      <div class="modal-body"><p style="color:var(--text2)">Are you sure you want to delete <strong style="color:var(--text)">${p?.name}</strong>? This action cannot be undone.</p></div>
-      <div class="modal-foot">
-        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-danger" onclick="confirmDeleteProduct(${id})">Delete Product</button>
-      </div>`,'sm');
-    }
-    function confirmDeleteProduct(id){
-      const p=getProduct(id);
-      products=products.filter(x=>x.id!==id);
-      logActivity('Product Deleted',p?.name||id);
-      toast('Produs șters','success');
-      persist(); closeModal(); PAGE_RENDERERS.products(); updateAlertBadge();
-    }
-
-    function viewProduct(id){
-      const p=getProduct(id);
-      if(!p)return;
-      const movs=movements.filter(m=>m.productId===id).slice().reverse().slice(0,5);
-      openModal(`
-      <div class="modal-head">
-        <div class="product-thumb" style="width:42px;height:42px;border-radius:10px">${p.image?`<img src="${p.image}"/>`:'📦'}</div>
-        <h2>${p.name}</h2>
-        <button class="btn btn-ghost btn-sm btn-icon" onclick="closeModal()">✕</button>
-      </div>
-      <div class="modal-body">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
-          ${[['Marcă',p.brand],['Cod',p.code],['Cod de bare',p.barcode||'—'],['Categorie',p.category],['Unitate',p.unit],['Preț achiziție','€'+fmt(p.buyPrice)],['Preț vânzare','€'+fmt(p.sellPrice)],['Stoc',p.stock+' '+p.unit],['Alertă minimă',p.lowStockAlert+' '+p.unit],['Valoare','€'+fmt(p.stock*p.buyPrice)],['Creat',p.createdAt]].map(([l,v])=>`
-          <div style="background:var(--bg3);padding:10px 14px;border-radius:8px;border:1px solid var(--border)">
-            <div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px">${l}</div>
-            <div style="font-size:14px;font-weight:600">${v}</div>
-          </div>`).join('')}
-        </div>
-        ${p.description?`<div style="background:var(--bg3);padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;color:var(--text2)">${p.description}</div>`:''}
-        <div style="font-family:var(--font-head);font-weight:700;font-size:13px;margin-bottom:10px">Mișcări recente</div>
-        ${movs.length===0?`<div style="color:var(--text3);font-size:13px">Nu există mișcări înregistrate</div>`
-        :movs.map(m=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
-          <span class="badge ${m.type==='IN'?'green':m.type==='OUT'?'red':'amber'}">${m.type}</span>
-          <span class="mono">${m.qty} ${p.unit}</span>
-          <span style="color:var(--text3);font-size:12px">${m.date}</span>
-          <span class="tag">${m.user}</span>
-          <span style="color:var(--text2);font-size:12px;margin-left:auto">${m.note||''}</span>
-        </div>`).join('')}
-      </div>
-      <div class="modal-foot">
-        ${canEdit()?`<button class="btn btn-ghost" onclick="closeModal();openAdjustModal(${id})">Ajustează stoc</button>`:''}
-        <button class="btn btn-primary" onclick="closeModal()">Închide</button>
-      </div>`,'xl');
-    }
-
-    function openAdjustModal(id){
-      const p=getProduct(id);
-      openModal(`
-      <div class="modal-head"><div class="stat-icon amber">≈</div><h2>Ajustare stoc — ${p?.name}</h2><button class="btn btn-ghost btn-sm btn-icon" onclick="closeModal()">✕</button></div>
-      <div class="modal-body">
-        <div class="form-grid">
-          <div class="form-group"><label class="form-label">Tip operațiune</label>
-            <select class="form-input" id="adj-type">
-              <option value="IN">Intrare — Adaugă stoc</option>
-              <option value="OUT">Ieșire — Scade stoc</option>
-              <option value="ADJUSTMENT">Ajustare — Setează exact</option>
-            </select>
-          </div>
-          <div class="form-group"><label class="form-label">Cantitate</label><input class="form-input" id="adj-qty" type="number" min="0" value="1"/></div>
-          <div class="form-group full"><label class="form-label">Notă</label><input class="form-input" id="adj-note" placeholder="Motivul ajustării..."/></div>
-        </div>
-        <div style="margin-top:14px;padding:10px 14px;background:var(--bg3);border-radius:8px;font-size:13px">
-          Stoc curent: <strong class="mono">${p?.stock} ${p?.unit}</strong>
-        </div>
-      </div>
-      <div class="modal-foot">
-        <button class="btn btn-ghost" onclick="closeModal()">Anulează</button>
-        <button class="btn btn-primary" onclick="saveAdjustment(${id})">Aplică ajustarea</button>
-      </div>`,'sm');
-    }
-
-    function saveAdjustment(id){
-      const p=getProduct(id);
-      const type=document.getElementById('adj-type').value;
-      const qty=parseInt(document.getElementById('adj-qty').value)||0;
-      const note=document.getElementById('adj-note').value.trim();
-      if(qty<=0){toast('Cantitatea trebuie să fie > 0','error');return;}
-      let newStock=p.stock;
-      if(type==='IN') newStock+=qty;
-      else if(type==='OUT'){ if(qty>p.stock){toast('Stoc insuficient','error');return;} newStock-=qty; }
-      else newStock=qty;
-      p.stock=newStock;
-      const mov={id:nextId('movements'),productId:id,type,qty,date:new Date().toISOString().slice(0,10),user:currentUser.username,note};
-      movements.push(mov);
-      logActivity('Stock Adjusted',`${p.name} ${type} ${qty}`);
-      toast(`Stoc actualizat: ${newStock} ${p.unit}`,'success');
-      persist(); closeModal(); PAGE_RENDERERS.products(); updateAlertBadge();
-    }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // PAGE: GOODS RECEPTION
-    // ═══════════════════════════════════════════════════════════════════
-    let recepItems = [];
-
-    PAGE_RENDERERS.reception = function(){
-      if(!canEdit()){ document.getElementById('content').innerHTML=`<div class="empty-state"><h3>Acces refuzat</h3><p>Ai nevoie de rol de operator sau administrator.</p></div>`; return; }
-      recepItems = [];
-      document.getElementById('content').innerHTML = `
-      <div class="section-head">
-        <h1>Recepție marfă nouă</h1>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
-        <div>
-          <div class="table-wrap" style="margin-bottom:16px">
-            <div class="table-header"><div class="table-title">Detalii factură</div></div>
-            <div style="padding:20px">
-              <div class="form-grid">
-                <div class="form-group"><label class="form-label">Furnizor *</label>
-                  <select class="form-input" id="rec-sup">
-                    ${suppliers.map(s=>`<option value="${s.name}">${s.name}</option>`).join('')}
-                  </select>
-                </div>
-                <div class="form-group"><label class="form-label">Număr factură *</label><input class="form-input" id="rec-no" placeholder="INV-2025-XXX"/></div>
-                <div class="form-group"><label class="form-label">Data facturii *</label><input class="form-input" id="rec-date" type="date" value="${new Date().toISOString().slice(0,10)}"/></div>
-                <div class="form-group"><label class="form-label">Notă</label><input class="form-input" id="rec-note" placeholder="Notă opțională..."/></div>
-              </div>
-            </div>
-          </div>
-          <!-- AI Invoice Scanner -->
-          <div class="table-wrap">
-            <div class="table-header"><div class="table-title">📄 Scaner facturi AI</div></div>
-            <div style="padding:20px">
-              <div class="upload-zone" id="upload-zone" onclick="document.getElementById('inv-file').click()">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                <div style="font-weight:600;margin-bottom:4px">Încarcă factură (PDF/Imagine)</div>
-                <div style="font-size:12px;color:var(--text3)">Click sau trage & plasează — AI va extrage produsele</div>
-              </div>
-              <input type="file" id="inv-file" accept="image/*,.pdf" style="display:none" onchange="handleInvoiceUpload(this)"/>
-              <div id="scan-status" style="margin-top:12px;display:none"></div>
-            </div>
-          </div>
-        </div>
-        <div class="table-wrap">
-          <div class="table-header">
-            <div class="table-title">Articole factură</div>
-            <button class="btn btn-primary btn-sm" onclick="addRecepItem()">${svgIcon('plus')} Adaugă articol</button>
-          </div>
-          <div id="recep-items-list" style="padding:12px">
-            <div style="text-align:center;padding:24px;color:var(--text3);font-size:13px">Nu s-au adăugat încă articole.<br/>Adaugă produse existente sau scanează factura.</div>
-          </div>
-          <div style="padding:12px 16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-            <div id="recep-total" style="font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--accent)">Total: €0.00</div>
-            <button class="btn btn-success" onclick="saveReception()">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-              Salvează recepția
-            </button>
-          </div>
-        </div>
-      </div>`;
-      renderRecepItems();
-      setupDropZone();
-    };
-
-    function setupDropZone(){
-      const z=document.getElementById('upload-zone');
-      if(!z)return;
-      z.addEventListener('dragover',e=>{e.preventDefault();z.classList.add('drag')});
-      z.addEventListener('dragleave',()=>z.classList.remove('drag'));
-      z.addEventListener('drop',e=>{e.preventDefault();z.classList.remove('drag');const f=e.dataTransfer.files[0];if(f)handleInvoiceUpload({files:[f]});});
-    }
-
-    function renderRecepItems(){
-      const el=document.getElementById('recep-items-list');
-      if(!el)return;
-      if(recepItems.length===0){ el.innerHTML=`<div style="text-align:center;padding:24px;color:var(--text3);font-size:13px">Nu s-au adăugat articole. Click „Adaugă articol” sau scanează o factură.</div>`; }
-      else {
-        el.innerHTML=recepItems.map((item,i)=>{
-          const p=item.productId?getProduct(item.productId):null;
-          return `<div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px">
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-              <span class="tag">#${i+1}</span>
-              <span style="font-weight:600;font-size:13px;flex:1">${item.name||p?.name||'Produs nou'}</span>
-              <button class="btn btn-danger btn-sm btn-icon" onclick="removeRecepItem(${i})">${svgIcon('trash')}</button>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-              <div><div class="form-label" style="margin-bottom:3px">Produs</div>
-                <select class="form-input" onchange="updateRecepItem(${i},'productId',this.value)" style="font-size:12px">
-                  <option value="">Produs nou</option>
-                  ${products.map(p=>`<option value="${p.id}" ${item.productId==p.id?'selected':''}>${p.name}</option>`).join('')}
-                </select>
-              </div>
-              <div><div class="form-label" style="margin-bottom:3px">Cant.</div><input class="form-input" type="number" min="1" value="${item.qty||1}" oninput="updateRecepItem(${i},'qty',this.value);updateRecepTotal()" style="font-size:12px"/></div>
-              <div><div class="form-label" style="margin-bottom:3px">Preț unitar (€)</div><input class="form-input" type="number" step="0.01" value="${item.price||0}" oninput="updateRecepItem(${i},'price',this.value);updateRecepTotal()" style="font-size:12px"/></div>
-              ${!item.productId?`<div class="full" style="grid-column:1/-1"><div class="form-label" style="margin-bottom:3px">Nume produs (nou)</div><input class="form-input" value="${item.name||''}" oninput="updateRecepItem(${i},'name',this.value)" placeholder="Introdu numele produsului..." style="font-size:12px"/></div>`:''}
-            </div>
-          </div>`;
-        }).join('');
-      }
-      updateRecepTotal();
-    }
-    function updateRecepTotal(){
-      const total=recepItems.reduce((s,i)=>s+(parseFloat(i.qty)||0)*(parseFloat(i.price)||0),0);
-      const el=document.getElementById('recep-total');
-      if(el) el.textContent=`Total: €${fmt(total)}`;
-    }
-    function addRecepItem(){ recepItems.push({productId:'',qty:1,price:0,name:''}); renderRecepItems(); }
-    function removeRecepItem(i){ recepItems.splice(i,1); renderRecepItems(); }
-    function updateRecepItem(i,key,val){
-      recepItems[i][key]=key==='productId'?(val?parseInt(val):''):val;
-      if(key==='productId'&&val){
-        const p=getProduct(parseInt(val));
-        if(p){ recepItems[i].price=p.buyPrice; renderRecepItems(); }
-      }
-    }
-
-    async function handleInvoiceUpload(input){
-      const file=input.files[0]; if(!file)return;
-      const st=document.getElementById('scan-status');
-      st.style.display='block';
-      st.innerHTML=`<div style="display:flex;align-items:center;gap:8px;color:var(--accent);font-size:13px"><div style="width:16px;height:16px;border:2px solid var(--accent);border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite"></div>Se analizează factura cu AI...</div>
-      <style>@keyframes spin{to{transform:rotate(360deg)}}</style>`;
-      try {
-        const b64=await toBase64(file);
-        const isImg=file.type.startsWith('image/');
-        const msg=isImg
-          ?[{type:'image',source:{type:'base64',media_type:file.type,data:b64}},{type:'text',text:'Extract all products from this invoice. Return ONLY a JSON array like: [{"name":"Product Name","qty":5,"price":10.50}]. No markdown, no explanation.'}]
-          :[{type:'text',text:`Extract products from this invoice data (base64 PDF). Return ONLY JSON array: [{"name":"Product Name","qty":5,"price":10.50}]`}];
-        const resp=await fetch('https://api.anthropic.com/v1/messages',{
-          method:'POST',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:msg}]})
-        });
-        const data=await resp.json();
-        const text=data.content[0]?.text||'[]';
-        let items;
-        try{ const clean=text.replace(/```json|```/g,'').trim(); items=JSON.parse(clean); }
-        catch(e){ items=[]; }
-        if(items.length>0){
-          items.forEach(item=>{
-            const matched=products.find(p=>p.name.toLowerCase().includes(item.name.toLowerCase()));
-            recepItems.push({productId:matched?matched.id:'',name:item.name,qty:parseInt(item.qty)||1,price:parseFloat(item.price)||0});
-          });
-          st.innerHTML=`<div style="color:var(--green);font-size:13px">✓ Extrase ${items.length} articol(e) din factură</div>`;
-          renderRecepItems();
-        } else {
-          st.innerHTML=`<div style="color:var(--amber);font-size:13px">⚠ Nu s-au detectat articole. Adaugă manual.</div>`;
-        }
-      } catch(e){
-        st.innerHTML=`<div style="color:var(--red);font-size:13px">✕ Scanarea a eșuat. Adaugă articole manual.</div>`;
-      }
-    }
-    function toBase64(file){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=e=>res(e.target.result.split(',')[1]); r.onerror=rej; r.readAsDataURL(file); }); }
-
-    function saveReception(){
-      const sup=document.getElementById('rec-sup')?.value;
-      const no=document.getElementById('rec-no')?.value.trim();
-      const date=document.getElementById('rec-date')?.value;
-      if(!no||!date){ toast('Numărul și data facturii sunt obligatorii','error'); return; }
-      if(recepItems.length===0){ toast('Adaugă cel puțin un articol','error'); return; }
-      const items=[];
-      let total=0;
-      for(const item of recepItems){
-        const qty=parseInt(item.qty)||0;
-        const price=parseFloat(item.price)||0;
-        if(qty<=0){ toast('Toate cantitățile trebuie să fie > 0','error'); return; }
-        if(item.productId){
-          const p=getProduct(item.productId);
-          p.stock+=qty;
-          movements.push({id:nextId('movements'),productId:p.id,type:'IN',qty,date,user:currentUser.username,note:`Invoice ${no}`});
-          items.push({productId:p.id,qty,price});
-        } else if(item.name){
-          const newP={id:nextId('products'),name:item.name,brand:'Unknown',code:'NEW-'+Date.now(),barcode:'',category:'Other',buyPrice:price,sellPrice:price*1.3,stock:qty,unit:'pcs',description:'',image:null,createdAt:date,lowStockAlert:5};
-          products.push(newP);
-          movements.push({id:nextId('movements'),productId:newP.id,type:'IN',qty,date,user:currentUser.username,note:`Invoice ${no}`});
-          items.push({productId:newP.id,qty,price});
-        }
-        total+=qty*price;
-      }
-      invoices.push({id:nextId('invoices'),supplier:sup,invoiceNo:no,date,items,total,status:'received',note:document.getElementById('rec-note')?.value||''});
-      logActivity('Invoice Received',`${no} from ${sup}`);
-      toast(`Factura ${no} salvată. Stoc actualizat!`,'success');
-      persist(); updateAlertBadge(); navigate('invoices');
-    }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // PAGE: MOVEMENTS
-    // ═══════════════════════════════════════════════════════════════════
-    let movPage=1;
-    PAGE_RENDERERS.movements = function(p){
-      movPage=p||1;
-      const typeF=document.getElementById('mov-type')?.value||'';
-      const prodF=document.getElementById('mov-prod')?.value||'';
-      let filtered=movements.slice().reverse().filter(m=>{
-        const matchT=!typeF||m.type===typeF;
-        const matchP=!prodF||m.productId==prodF;
-        return matchT&&matchP;
-      });
-      const total=filtered.length;
-      const pages=Math.max(1,Math.ceil(total/15));
-      movPage=Math.min(movPage,pages);
-      const slice=filtered.slice((movPage-1)*15,movPage*15);
-
-      document.getElementById('content').innerHTML=`
-      <div class="section-head">
-        <h1>Mișcări de stoc</h1>
-        ${canEdit()?`<button class="btn btn-primary" onclick="openAdjustModal(null)">Ajustare manuală</button>`:''}
-      </div>
-      <div class="table-wrap">
-        <div class="table-header">
-          <select class="form-input" id="mov-type" style="width:auto" onchange="PAGE_RENDERERS.movements()">
-            <option value="">Toate tipurile</option>
-            <option value="IN">IN</option><option value="OUT">OUT</option><option value="ADJUSTMENT">ADJUSTMENT</option>
-          </select>
-          <select class="form-input" id="mov-prod" style="width:auto" onchange="PAGE_RENDERERS.movements()">
-            <option value="">Toate produsele</option>
-            ${products.map(p=>`<option value="${p.id}">${p.name}</option>`).join('')}
-          </select>
-          <span style="margin-left:auto;font-size:12px;color:var(--text3)">${total} înregistrări</span>
-        </div>
-        <div class="table-scroll">
-          <table class="data-table">
-            <thead><tr><th>Dată</th><th>Produs</th><th>Tip</th><th>Cant.</th><th>Stoc după</th><th>Utilizator</th><th>Notă</th><th>Acțiuni</th></tr></thead>
-            <tbody>
-              ${slice.length===0?`<tr><td colspan="8"><div class="empty-state"><h3>Nu există mișcări</h3></div></td></tr>`
-              :slice.map(m=>{
-                const prod=getProduct(m.productId);
-                return `<tr>
-                  <td class="mono" style="color:var(--text2);font-size:12px">${m.date}</td>
-                  <td><span style="font-weight:500">${prod?prod.name:'Produs șters'}</span>${prod?`<br/><span style="font-size:11px;color:var(--text3)">${prod.code}</span>`:''}</td>
-                  <td><span class="badge ${m.type==='IN'?'green':m.type==='OUT'?'red':'amber'}">${m.type==='IN'?'↑ Intrare':m.type==='OUT'?'↓ Ieșire':'≈ Ajustare'}</span></td>
-                  <td class="mono" style="font-size:14px;font-weight:600;color:${m.type==='IN'?'var(--green)':'var(--red)'}">${m.type==='IN'?'+':''}${m.type==='OUT'?'-':''}${m.qty}</td>
-                  <td class="mono">${prod?prod.stock:'—'}</td>
-                  <td><span class="tag">${m.user}</span></td>
-                  <td style="color:var(--text2);font-size:12px">${m.note||'—'}</td>
-                  <td>
-                    ${canEdit()?`<button class="btn btn-ghost btn-sm" onclick="deleteMovement(${m.id})">${svgIcon('trash')}</button>`:''}
-                  </td>
-                </tr>`;
-              }).join('')}
-            </tbody>
-          </table>
-        </div>
-        ${renderPagination(movPage,pages,'PAGE_RENDERERS.movements')}
-      </div>`;
-    };
-
-    function deleteMovement(id){
-      if(!confirm('Sigur vrei să ștergi această mișcare din istoric?\n(Notă: ștergerea nu modifică stocul, doar istoricul.)')) return;
-      const idx = movements.findIndex(m=>m.id===id);
-      if(idx===-1) return;
-      movements.splice(idx,1);
-      persist();
-      logActivity('Ștergere mișcare stoc',`Mișcare ID ${id} ștearsă din istoric`);
-      PAGE_RENDERERS.movements(movPage);
-      toast('Mișcare ștearsă din istoric','success');
-    }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // PAGE: INVOICES
-    // ═══════════════════════════════════════════════════════════════════
-    PAGE_RENDERERS.invoices = function(){
-      document.getElementById('content').innerHTML=`
-      <div class="section-head">
-        <h1>Istoric facturi</h1>
-        ${canEdit()?`<button class="btn btn-primary" onclick="navigate('reception')">${svgIcon('plus')} Recepție nouă</button>`:''}
-      </div>
-      <div class="table-wrap">
-        <div class="table-scroll">
-          <table class="data-table">
-            <thead><tr><th>Factură #</th><th>Furnizor</th><th>Dată</th><th>Articole</th><th>Total</th><th>Status</th><th>Acțiuni</th></tr></thead>
-            <tbody>
-              ${invoices.length===0?`<tr><td colspan="7"><div class="empty-state"><h3>Nu există încă facturi</h3><p>Înregistrează prima recepție de marfă</p></div></td></tr>`
-              :invoices.slice().reverse().map(inv=>`
-              <tr>
-                <td class="mono" style="color:var(--accent)">${inv.invoiceNo}</td>
-                <td style="font-weight:500">${inv.supplier}</td>
-                <td class="mono" style="color:var(--text2)">${inv.date}</td>
-                <td class="mono">${inv.items.length} articol(e)</td>
-                <td class="mono" style="color:var(--green);font-weight:600">€${fmt(inv.total)}</td>
-                <td><span class="badge green">${inv.status==='received'?'primit':inv.status}</span></td>
-                <td><button class="btn btn-ghost btn-sm btn-icon" onclick="viewInvoice(${inv.id})">${svgIcon('eye')}</button></td>
-              </tr>`).join('')}
-            </tbody>
-          </table>
-        </div>
-      </div>`;
-    };
-
-    function viewInvoice(id){
-      const inv=invoices.find(i=>i.id===id);
-      if(!inv)return;
-      openModal(`
-      <div class="modal-head">
-        <div class="stat-icon accent"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg></div>
-        <h2>${inv.invoiceNo}</h2>
-        <button class="btn btn-ghost btn-sm btn-icon" onclick="closeModal()">✕</button>
-      </div>
-      <div class="modal-body">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px">
-          ${[['Furnizor',inv.supplier],['Dată',inv.date],['Status',inv.status==='received'?'Primit':inv.status],['Notă',inv.note||'—']].map(([l,v])=>`
-          <div style="background:var(--bg3);padding:10px;border-radius:8px">
-            <div style="font-size:10px;color:var(--text3);text-transform:uppercase;font-weight:600;margin-bottom:2px">${l}</div>
-            <div style="font-size:13px;font-weight:600">${v}</div>
-          </div>`).join('')}
-        </div>
-        <table class="data-table" style="border:1px solid var(--border);border-radius:8px;overflow:hidden">
-          <thead><tr><th>Produs</th><th>Cant.</th><th>Preț unitar</th><th>Subtotal</th></tr></thead>
-          <tbody>
-            ${inv.items.map(item=>{const p=getProduct(item.productId);return`
-            <tr>
-              <td style="font-weight:500">${p?p.name:'Șters'}</td>
-              <td class="mono">${item.qty}</td>
-              <td class="mono">€${fmt(item.price)}</td>
-              <td class="mono" style="color:var(--green)">€${fmt(item.qty*item.price)}</td>
-            </tr>`;}).join('')}
-            <tr style="background:var(--bg3)"><td colspan="3" style="text-align:right;font-weight:700">TOTAL</td><td class="mono" style="color:var(--accent);font-weight:700;font-size:15px">€${fmt(inv.total)}</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="modal-foot"><button class="btn btn-primary" onclick="closeModal()">Închide</button></div>`,'xl');
-    }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // PAGE: SUPPLIERS
-    // ═══════════════════════════════════════════════════════════════════
-    PAGE_RENDERERS.suppliers = function(){
-      document.getElementById('content').innerHTML=`
-      <div class="section-head">
-        <h1>Furnizori</h1>
-        ${isAdmin()?`<button class="btn btn-primary" onclick="openSupplierModal()">${svgIcon('plus')} Adaugă furnizor</button>`:''}
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px">
-        ${suppliers.map(s=>`
-        <div class="supplier-card">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
-            <div style="width:44px;height:44px;background:var(--accent-dim);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-weight:800;font-size:18px;color:var(--accent)">${s.name[0]}</div>
-            <div>
-              <div style="font-weight:700;font-size:15px">${s.name}</div>
-              <div style="font-size:11px;color:var(--text3)">${invoices.filter(i=>i.supplier===s.name).length} facturi</div>
-            </div>
-            ${isAdmin()?`<div style="margin-left:auto;display:flex;gap:4px">
-              <button class="btn btn-ghost btn-sm btn-icon" onclick="openSupplierModal(${s.id})">${svgIcon('edit')}</button>
-              <button class="btn btn-danger btn-sm btn-icon" onclick="deleteSupplier(${s.id})">${svgIcon('trash')}</button>
-            </div>`:''}
-          </div>
-          <div style="display:flex;flex-direction:column;gap:6px">
-            <div style="display:flex;gap:8px;font-size:12px;color:var(--text2)">
-              <span>📧</span><span>${s.contact}</span>
-            </div>
-            <div style="display:flex;gap:8px;font-size:12px;color:var(--text2)">
-              <span>📞</span><span>${s.phone}</span>
-            </div>
-            <div style="display:flex;gap:8px;font-size:12px;color:var(--text2)">
-              <span>📍</span><span>${s.address||'—'}</span>
-            </div>
-            <div style="display:flex;gap:8px;font-size:12px;color:var(--text2);margin-top:4px">
-              <span>💰</span><span>Total cheltuit: €${fmt(invoices.filter(i=>i.supplier===s.name).reduce((s,i)=>s+i.total,0))}</span>
-            </div>
-          </div>
-        </div>`).join('')}
-        ${suppliers.length===0?`<div class="empty-state"><h3>Nu există încă furnizori</h3></div>`:''}
-      </div>`;
-    };
-
-    function openSupplierModal(id){
-      const s=id?suppliers.find(x=>x.id===id):null;
-      openModal(`
-      <div class="modal-head"><h2>${s?'Editează':'Adaugă'} furnizor</h2><button class="btn btn-ghost btn-sm btn-icon" onclick="closeModal()">✕</button></div>
-      <div class="modal-body">
-        <div class="form-grid">
-          <div class="form-group full"><label class="form-label">Denumire firmă *</label><input class="form-input" id="sf-name" value="${s?s.name:''}" placeholder="Denumire firmă"/></div>
-          <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="sf-contact" value="${s?s.contact:''}" placeholder="email@firma.ro"/></div>
-          <div class="form-group"><label class="form-label">Telefon</label><input class="form-input" id="sf-phone" value="${s?s.phone:''}" placeholder="+40 7XX XXX XXX"/></div>
-          <div class="form-group full"><label class="form-label">Adresă</label><input class="form-input" id="sf-addr" value="${s?s.address||'':''}" placeholder="Adresă completă"/></div>
-        </div>
-      </div>
-      <div class="modal-foot">
-        <button class="btn btn-ghost" onclick="closeModal()">Anulează</button>
-        <button class="btn btn-primary" onclick="saveSupplier(${s?s.id:'null'})">Salvează</button>
-      </div>`,'sm');
-    }
-    function saveSupplier(id){
-      const name=document.getElementById('sf-name').value.trim();
-      if(!name){toast('Numele este obligatoriu','error');return;}
-      const data={name,contact:document.getElementById('sf-contact').value.trim(),phone:document.getElementById('sf-phone').value.trim(),address:document.getElementById('sf-addr').value.trim()};
-      if(id){const i=suppliers.findIndex(s=>s.id===id);suppliers[i]={...suppliers[i],...data};}
-      else{data.id=nextId('suppliers');suppliers.push(data);}
-      logActivity(id?'Supplier Updated':'Supplier Added',name);
-      toast(id?'Furnizor actualizat':'Furnizor adăugat','success');
-      persist();closeModal();PAGE_RENDERERS.suppliers();
-    }
-    function deleteSupplier(id){
-      if(!isAdmin())return;
-      const s=suppliers.find(x=>x.id===id);
-      suppliers=suppliers.filter(x=>x.id!==id);
-      logActivity('Supplier Deleted',s?.name||id);
-      toast('Furnizor eliminat','success');
-      persist();PAGE_RENDERERS.suppliers();
-    }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // PAGE: SCANNER
-    // ═══════════════════════════════════════════════════════════════════
-    PAGE_RENDERERS.scanner = function(){
-      document.getElementById('content').innerHTML=`
-      <div class="section-head"><h1>Scanner coduri de bare</h1></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
-        <div>
-          <div class="table-wrap" style="margin-bottom:16px">
-            <div class="table-header"><div class="table-title">🔍 Scanează sau introdu codul</div></div>
-            <div style="padding:20px">
-              <div class="scanner-wrap">
-                <div class="scanner-line"></div>
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 12px;display:block;opacity:0.4"><rect x="3" y="7" width="4" height="10"/><rect x="8.5" y="7" width="2" height="10"/><rect x="12" y="7" width="3" height="10"/><rect x="16.5" y="7" width="1.5" height="10"/><rect x="19" y="7" width="2" height="10"/><path d="M1 5h22M1 19h22"/></svg>
-                <div style="font-size:13px;color:var(--text2);margin-bottom:8px">Poziționează scanerul sau introdu codul manual</div>
-                <div style="font-size:11px;color:var(--text3)">Scanerele USB funcționează automat (se comportă ca tastatură)</div>
-              </div>
-              <div class="scanner-input-area">
-                <input class="form-input" id="scan-input" placeholder="Scanează sau tastează codul..." autofocus oninput="scannerLookup(this.value)" style="flex:1"/>
-                <button class="btn btn-primary" onclick="scannerLookup(document.getElementById('scan-input').value)">Caută</button>
-              </div>
-              <div style="margin-top:8px;font-size:11px;color:var(--text3)">Sfat: Conectează un scaner USB — tastează automat la scanare.</div>
-            </div>
-          </div>
-          <div class="table-wrap">
-            <div class="table-header"><div class="table-title">📷 Scanare cameră</div></div>
-            <div style="padding:20px;text-align:center">
-              <div id="cam-area">
-                <button class="btn btn-primary" onclick="startCamera()" style="margin-bottom:12px">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                  Pornește camera
-                </button>
-                <div style="font-size:12px;color:var(--text3)">Folosește camera telefonului pentru a scana coduri</div>
-              </div>
-              <video id="scan-video" style="display:none;width:100%;max-width:300px;border-radius:8px;border:2px solid var(--accent)"></video>
-              <canvas id="scan-canvas" style="display:none"></canvas>
-              <div id="cam-result" style="margin-top:10px"></div>
-            </div>
-          </div>
-        </div>
-        <div class="table-wrap">
-          <div class="table-header"><div class="table-title">Produs găsit</div></div>
-          <div id="scanner-result" style="padding:24px;text-align:center;color:var(--text3)">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 12px;opacity:0.3"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <div>Scanează un cod pentru a găsi produsul</div>
-          </div>
-        </div>
-      </div>`;
-      document.getElementById('scan-input').focus();
-    };
-
-    let scanTimeout;
-    function scannerLookup(val){
-      clearTimeout(scanTimeout);
-      if(!val.trim())return;
-      scanTimeout=setTimeout(()=>{
-        const p=products.find(x=>x.barcode===val.trim()||x.code===val.trim());
-        const el=document.getElementById('scanner-result');
-        if(!el)return;
-        if(p){
-          el.innerHTML=`
-          <div style="padding:20px">
-            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
-              <div class="product-thumb" style="width:56px;height:56px">${p.image?`<img src="${p.image}"/>`:'📦'}</div>
-              <div>
-                <div style="font-family:var(--font-head);font-weight:800;font-size:18px">${p.name}</div>
-                <div style="color:var(--text2)">${p.brand} — <span class="tag">${p.code}</span></div>
-              </div>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
-              ${[['Categorie',p.category],['Unitate',p.unit],['Preț achiziție','€'+fmt(p.buyPrice)],['Preț vânzare','€'+fmt(p.sellPrice)]].map(([l,v])=>`
-              <div style="background:var(--bg3);padding:10px;border-radius:8px">
-                <div style="font-size:10px;color:var(--text3);text-transform:uppercase;font-weight:600">${l}</div>
-                <div style="font-size:14px;font-weight:600">${v}</div>
-              </div>`).join('')}
-            </div>
-            <div style="background:${p.stock===0?'var(--red-dim)':p.stock<=p.lowStockAlert?'var(--amber-dim)':'var(--green-dim)'};border:1px solid ${p.stock===0?'var(--red)':p.stock<=p.lowStockAlert?'var(--amber)':'var(--green)'};padding:12px 16px;border-radius:10px;margin-bottom:16px;text-align:center">
-              <div style="font-family:var(--font-head);font-size:32px;font-weight:800;color:${p.stock===0?'var(--red)':p.stock<=p.lowStockAlert?'var(--amber)':'var(--green)'}">${p.stock}</div>
-              <div style="font-size:12px;color:var(--text2)">${p.unit} în stoc</div>
-            </div>
-            ${canEdit()?`<div style="display:flex;gap:8px">
-              <button class="btn btn-success" style="flex:1" onclick="quickStock(${p.id},'IN')">+ Adaugă stoc</button>
-              <button class="btn btn-danger" style="flex:1" onclick="quickStock(${p.id},'OUT')">- Scade stoc</button>
-            </div>`:''}
-          </div>`;
-        } else {
-          el.innerHTML=`<div style="padding:24px;text-align:center">
-            <div style="font-size:32px;margin-bottom:8px">🔍</div>
-            <div style="font-weight:600;color:var(--text)">Produs negăsit</div>
-            <div style="color:var(--text3);font-size:13px;margin-top:4px">Cod: <span class="mono">${val}</span></div>
-            ${canEdit()?`<button class="btn btn-primary" style="margin-top:12px" onclick="openProductModal()">Creează produs nou</button>`:''}
-          </div>`;
-        }
-      },300);
-    }
-
-    function quickStock(id,type){
-      const p=getProduct(id);
-      openModal(`
-      <div class="modal-head"><h2>Rapid ${type==='IN'?'Intrare':'Ieșire'} — ${p?.name}</h2><button class="btn btn-ghost btn-sm btn-icon" onclick="closeModal()">✕</button></div>
-      <div class="modal-body">
-        <div style="text-align:center;margin-bottom:16px;font-size:13px;color:var(--text2)">Curent: <strong class="mono">${p?.stock} ${p?.unit}</strong></div>
-        <div class="form-group"><label class="form-label">Cantitate</label><input class="form-input" id="qs-qty" type="number" min="1" value="1" style="text-align:center;font-size:20px;font-family:var(--font-mono)"/></div>
-      </div>
-      <div class="modal-foot">
-        <button class="btn btn-ghost" onclick="closeModal()">Anulează</button>
-        <button class="btn btn-primary" onclick="saveAdjustmentQuick(${id},'${type}')">Confirmă ${type==='IN'?'intrare':'ieșire'}</button>
-      </div>`,'sm');
-    }
-    function saveAdjustmentQuick(id,type){
-      const p=getProduct(id);
-      const qty=parseInt(document.getElementById('qs-qty').value)||0;
-      if(qty<=0){toast('Cantitatea trebuie să fie > 0','error');return;}
-      if(type==='OUT'&&qty>p.stock){toast('Stoc insuficient','error');return;}
-      if(type==='IN') p.stock+=qty; else p.stock-=qty;
-      movements.push({id:nextId('movements'),productId:id,type,qty,date:new Date().toISOString().slice(0,10),user:currentUser.username,note:'Quick scanner update'});
-      logActivity('Quick '+type,`${p.name} ×${qty}`);
-      toast(`Stoc actualizat: ${p.stock} ${p.unit}`,'success');
-      persist();closeModal();updateAlertBadge();
-      scannerLookup(p.barcode||p.code);
-    }
-
-    function startCamera(){
-      const area=document.getElementById('cam-area');
-      const video=document.getElementById('scan-video');
-      if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){
-        area.innerHTML=`<button class="btn btn-danger" onclick="stopCamera()" style="margin-bottom:8px">Oprește camera</button>`;
-        video.style.display='block';
-        navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}).then(stream=>{
-          video.srcObject=stream;video.play();
-          document.getElementById('cam-result').innerHTML='<div style="color:var(--text3);font-size:12px">Camera activă — detectarea codurilor necesită o bibliotecă</div>';
-        }).catch(()=>{ document.getElementById('cam-result').innerHTML='<div style="color:var(--red);font-size:12px">Accesul la cameră blocat</div>'; });
-      } else { document.getElementById('cam-result').innerHTML='<div style="color:var(--red);font-size:12px">Camera indisponibilă</div>'; }
-    }
-    function stopCamera(){
-      const v=document.getElementById('scan-video');
-      if(v.srcObject) v.srcObject.getTracks().forEach(t=>t.stop());
-      v.style.display='none';
-      document.getElementById('cam-area').innerHTML=`<button class="btn btn-primary" onclick="startCamera()">Pornește camera</button>`;
-    }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // PAGE: REPORTS
-    // ═══════════════════════════════════════════════════════════════════
-    PAGE_RENDERERS.reports = function(){
-      const totalCost=products.reduce((s,p)=>s+p.stock*p.buyPrice,0);
-      const totalSell=products.reduce((s,p)=>s+p.stock*p.sellPrice,0);
-      const totalInv=invoices.reduce((s,i)=>s+i.total,0);
-
-      document.getElementById('content').innerHTML=`
-      <div class="section-head"><h1>Rapoarte și export</h1></div>
-      <div class="stat-grid" style="margin-bottom:24px">
-        <div class="stat-card accent"><div class="stat-icon accent">€</div><div class="stat-val">€${fmt(totalCost)}</div><div class="stat-label">Cost total inventar</div></div>
-        <div class="stat-card green"><div class="stat-icon green">€</div><div class="stat-val">€${fmt(totalSell)}</div><div class="stat-label">Valoare totală vânzare</div></div>
-        <div class="stat-card amber"><div class="stat-icon amber">📊</div><div class="stat-val">€${fmt(totalSell-totalCost)}</div><div class="stat-label">Marjă potențială</div></div>
-        <div class="stat-card"><div class="stat-icon violet">📄</div><div class="stat-val">€${fmt(totalInv)}</div><div class="stat-label">Total achiziții</div></div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-        <div class="table-wrap"><div class="table-header"><div class="table-title">📦 Raport inventar</div></div>
-          <div style="padding:20px;display:flex;flex-direction:column;gap:10px">
-            <p style="font-size:13px;color:var(--text2)">Listă completă produse cu stoc, valori și detalii.</p>
-            <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <button class="btn btn-success" onclick="exportExcel('inventory')">${svgIcon('download')} Export Excel</button>
-              <button class="btn btn-ghost" onclick="exportCSV('inventory')">${svgIcon('download')} Export CSV</button>
-              <button class="btn btn-ghost" onclick="printReport('inventory')">${svgIcon('download')} Printare / PDF</button>
-            </div>
-          </div>
-        </div>
-        <div class="table-wrap"><div class="table-header"><div class="table-title">📄 Raport facturi</div></div>
-          <div style="padding:20px;display:flex;flex-direction:column;gap:10px">
-            <p style="font-size:13px;color:var(--text2)">Toate recepțiile, furnizorii și totalurile facturilor.</p>
-            <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <button class="btn btn-success" onclick="exportExcel('invoices')">${svgIcon('download')} Export Excel</button>
-              <button class="btn btn-ghost" onclick="exportCSV('invoices')">${svgIcon('download')} Export CSV</button>
-              <button class="btn btn-ghost" onclick="printReport('invoices')">${svgIcon('download')} Printare / PDF</button>
-            </div>
-          </div>
-        </div>
-        <div class="table-wrap"><div class="table-header"><div class="table-title">📈 Raport mișcări</div></div>
-          <div style="padding:20px;display:flex;flex-direction:column;gap:10px">
-            <p style="font-size:13px;color:var(--text2)">Istoric complet mișcări stoc — intrări, ieșiri și ajustări.</p>
-            <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <button class="btn btn-success" onclick="exportExcel('movements')">${svgIcon('download')} Export Excel</button>
-              <button class="btn btn-ghost" onclick="exportCSV('movements')">${svgIcon('download')} Export CSV</button>
-            </div>
-          </div>
-        </div>
-        <div class="table-wrap"><div class="table-header"><div class="table-title">💾 Backup și restaurare</div></div>
-          <div style="padding:20px;display:flex;flex-direction:column;gap:10px">
-            <p style="font-size:13px;color:var(--text2)">Exportă sau importă backup complet al sistemului.</p>
-            <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <button class="btn btn-primary" onclick="backupData()">${svgIcon('download')} Descarcă backup</button>
-              <button class="btn btn-ghost" onclick="document.getElementById('restore-file').click()">↑ Restaurează backup</button>
-              <input type="file" id="restore-file" accept=".json" style="display:none" onchange="restoreData(this)"/>
-            </div>
-          </div>
-        </div>
-      </div>`;
-    };
-
-    function exportExcel(type){
-      let data=[], title='';
-      if(type==='inventory'){
-        title='Inventory Report';
-        data=products.map(p=>({'Name':p.name,'Brand':p.brand,'Code':p.code,'Barcode':p.barcode,'Category':p.category,'Buy Price':p.buyPrice,'Sell Price':p.sellPrice,'Stock':p.stock,'Unit':p.unit,'Stock Value':+(p.stock*p.buyPrice).toFixed(2),'Created':p.createdAt}));
-      } else if(type==='invoices'){
-        title='Invoices Report';
-        data=invoices.map(i=>({'Invoice #':i.invoiceNo,'Supplier':i.supplier,'Date':i.date,'Items':i.items.length,'Total':i.total,'Status':i.status}));
-      } else {
-        title='Movements Report';
-        data=movements.map(m=>{const p=getProduct(m.productId);return{'Date':m.date,'Product':p?p.name:'—','Type':m.type,'Qty':m.qty,'User':m.user,'Note':m.note};});
-      }
-      const ws=XLSX.utils.json_to_sheet(data);
-      const wb=XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb,ws,title);
-      XLSX.writeFile(wb,`${title.replace(/ /g,'_')}_${new Date().toISOString().slice(0,10)}.xlsx`);
-      toast('Excel exportat!','success');
-      logActivity('Export',title+' Excel');
-    }
-
-    function exportCSV(type){
-      let rows=[], headers=[];
-      if(type==='inventory'){
-        headers=['Name','Brand','Code','Barcode','Category','Buy Price','Sell Price','Stock','Unit','Value'];
-        rows=products.map(p=>[p.name,p.brand,p.code,p.barcode,p.category,p.buyPrice,p.sellPrice,p.stock,p.unit,+(p.stock*p.buyPrice).toFixed(2)]);
-      } else {
-        headers=['Invoice #','Supplier','Date','Total','Status'];
-        rows=invoices.map(i=>[i.invoiceNo,i.supplier,i.date,i.total,i.status]);
-      }
-      const csv=[headers,...rows].map(r=>r.map(v=>`"${v}"`).join(',')).join('\n');
-      const a=document.createElement('a'); a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
-      a.download=`${type}_${new Date().toISOString().slice(0,10)}.csv`; a.click();
-      toast('CSV exportat!','success');
-    }
-
-    function printReport(type){
-      let html='<html><head><title>Raport</title><style>body{font-family:sans-serif;font-size:12px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ccc;padding:6px;text-align:left}th{background:#eee;font-weight:bold}</style></head><body>';
-      if(type==='inventory'){
-        html+=`<h2>Raport inventar — ${new Date().toLocaleDateString('ro-RO')}</h2><table><tr>${['Nume','Marcă','Cod','Categorie','Achiziție','Vânzare','Stoc','Valoare'].map(h=>`<th>${h}</th>`).join('')}</tr>`;
-        html+=products.map(p=>`<tr><td>${p.name}</td><td>${p.brand}</td><td>${p.code}</td><td>${p.category}</td><td>€${fmt(p.buyPrice)}</td><td>€${fmt(p.sellPrice)}</td><td>${p.stock} ${p.unit}</td><td>€${fmt(p.stock*p.buyPrice)}</td></tr>`).join('');
-        html+=`<tr><td colspan="7" style="text-align:right;font-weight:bold">VALOARE TOTALĂ</td><td>€${fmt(products.reduce((s,p)=>s+p.stock*p.buyPrice,0))}</td></tr>`;
-      } else {
-        html+=`<h2>Raport facturi — ${new Date().toLocaleDateString('ro-RO')}</h2><table><tr>${['Factură #','Furnizor','Dată','Total','Status'].map(h=>`<th>${h}</th>`).join('')}</tr>`;
-        html+=invoices.map(i=>`<tr><td>${i.invoiceNo}</td><td>${i.supplier}</td><td>${i.date}</td><td>€${fmt(i.total)}</td><td>${i.status==='received'?'Primit':i.status}</td></tr>`).join('');
-      }
-      html+='</table></body></html>';
-      const w=window.open('','_blank'); w.document.write(html); w.document.close(); w.print();
-    }
-
-    function backupData(){
-      const backup={products,categories,suppliers,movements,invoices,activityLog,idCounters,exportDate:new Date().toISOString()};
-      const a=document.createElement('a'); a.href='data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(backup,null,2));
-      a.download=`stockcommand_backup_${new Date().toISOString().slice(0,10)}.json`; a.click();
-      toast('Backup descărcat!','success');
-      logActivity('Backup','Data exported');
-    }
-    function restoreData(input){
-      const f=input.files[0]; if(!f)return;
-      const r=new FileReader(); r.onload=e=>{
-        try{
-          const d=JSON.parse(e.target.result);
-          if(d.products){products=d.products;saveState('products',products);}
-          if(d.suppliers){suppliers=d.suppliers;saveState('suppliers',suppliers);}
-          if(d.categories){categories=d.categories;saveState('categories',categories);}
-          if(d.movements){movements=d.movements;saveState('movements',movements);}
-          if(d.invoices){invoices=d.invoices;saveState('invoices',invoices);}
-          if(d.activityLog){activityLog=d.activityLog;saveState('activityLog',activityLog);}
-          if(d.idCounters){idCounters=d.idCounters;saveState('idCounters',idCounters);}
-          logActivity('Restore','Data restored from backup');
-          toast('Backup restaurat!','success'); updateAlertBadge(); PAGE_RENDERERS.reports();
-        }catch(err){ toast('Fișier backup invalid','error'); }
-      }; r.readAsText(f);
-    }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // PAGE: ALERTS
-    // ═══════════════════════════════════════════════════════════════════
-    PAGE_RENDERERS.alerts = function(){
-      const low=getLowStock();
-      document.getElementById('content').innerHTML=`
-      <div class="section-head">
-        <h1>Alerte stoc mic</h1>
-        <span class="badge red">${low.length} produse</span>
-      </div>
-      ${low.length===0?`<div class="table-wrap"><div style="padding:40px;text-align:center">
-        <div style="font-size:48px;margin-bottom:12px">✅</div>
-        <div style="font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--green)">Toate stocurile sunt în regulă!</div>
-        <div style="color:var(--text3);font-size:13px;margin-top:4px">Niciun produs sub pragul de alertă</div>
-      </div></div>`
-      :`<div class="table-wrap">
-        <div class="table-scroll">
-          <table class="data-table">
-            <thead><tr><th>Produs</th><th>Categorie</th><th>Stoc curent</th><th>Nivel alertă</th><th>Status</th><th>Valoare la risc</th>${canEdit()?'<th>Acțiune</th>':''}</tr></thead>
-            <tbody>
-              ${low.map(p=>`<tr>
-                <td><div style="font-weight:600">${p.name}</div><div style="font-size:11px;color:var(--text3)">${p.brand} — ${p.code}</div></td>
-                <td><span class="badge ${categoryColor(p.category)}">${p.category}</span></td>
-                <td><span class="badge ${stockColor(p)}" style="font-size:13px">${p.stock} ${p.unit}</span></td>
-                <td class="mono">${p.lowStockAlert} ${p.unit}</td>
-                <td><span class="badge ${p.stock===0?'red':'amber'}">${p.stock===0?'STOC EPUIZAT':'STOC MIC'}</span></td>
-                <td class="mono" style="color:var(--red)">€${fmt(p.lowStockAlert*p.buyPrice)}</td>
-                ${canEdit()?`<td><button class="btn btn-success btn-sm" onclick="openAdjustModal(${p.id})">Reaprovizionare</button></td>`:''}
-              </tr>`).join('')}
-            </tbody>
-          </table>
-        </div>
-      </div>`}`;
-    };
-
-    // ═══════════════════════════════════════════════════════════════════
-    // PAGE: USERS
-    // ═══════════════════════════════════════════════════════════════════
-    PAGE_RENDERERS.users = function(){
-      if(!isAdmin()){navigate('dashboard');return;}
-      document.getElementById('content').innerHTML=`
-      <div class="section-head">
-        <h1>Administrare utilizatori</h1>
-        <button class="btn btn-primary btn-sm" onclick="openUserModal(null)">${svgIcon('plus')} Adaugă utilizator</button>
-      </div>
-      <div class="table-wrap">
-        <div class="table-scroll">
-          <table class="data-table">
-            <thead><tr><th>Nume</th><th>Utilizator</th><th>Rol</th><th>Drepturi</th><th style="width:120px">Acțiuni</th></tr></thead>
-            <tbody>
-              ${users.map(u=>`<tr>
-                <td>
-                  <div style="display:flex;align-items:center;gap:10px">
-                    <div class="user-avatar" style="width:36px;height:36px;background:${u.color||'#ff7a00'}22;color:${u.color||'#ff7a00'}">${u.name[0]}</div>
-                    <div><div style="font-weight:600">${u.name}</div></div>
-                  </div>
-                </td>
-                <td class="mono">${u.username}</td>
-                <td><span class="badge ${u.role==='admin'?'red':u.role==='employee'?'green':'accent'}">${u.role}</span></td>
-                <td style="font-size:12px;color:var(--text2)">
-                  ${u.role==='admin'?'Acces complet — produse, utilizatori, rapoarte'
-                   :u.role==='employee'?'Recepție, mișcări stoc, vizualizare'
-                   :'Doar vizualizare'}
-                </td>
-                <td>
-                  <button class="btn btn-ghost btn-sm" onclick="openUserModal(${u.id})">${svgIcon('edit')} Editează</button>
-                </td>
-              </tr>`).join('')}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div style="margin-top:16px;padding:14px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;font-size:12px;color:var(--text3)">
-        <strong style="color:var(--text2)">Info:</strong> utilizatorii și parolele se salvează local în browser (localStorage), deci funcționează și dacă site-ul este găzduit pe GitHub Pages. Pe fiecare calculator se va păstra stocul separat.
-      </div>`;
-    };
-
-    function openUserModal(id){
-      const u = id!=null ? users.find(x=>x.id===id) : {id:null,name:'',username:'',password:'',role:'employee',color:'#ff7a00'};
-      openModal(`
-        <div class="modal-head">
-          <h2>${id!=null?'Editează utilizator':'Utilizator nou'}</h2>
-          <button class="btn btn-ghost btn-sm btn-icon" onclick="closeModal()">✕</button>
-        </div>
-        <div class="modal-body">
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label">Nume afișat</label>
-              <input class="form-input" id="user-name" value="${u.name||''}" placeholder="Ex: Administrator depozit"/>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Utilizator</label>
-              <input class="form-input" id="user-username" value="${u.username||''}" placeholder="Ex: admin-depozit"/>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Parolă</label>
-              <input class="form-input" id="user-password" type="text" value="${u.password||''}" placeholder="Setează parola"/>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Rol</label>
-              <select class="form-input" id="user-role">
-                <option value="admin" ${u.role==='admin'?'selected':''}>Admin</option>
-                <option value="employee" ${u.role==='employee'?'selected':''}>Operator magazie</option>
-                <option value="viewer" ${u.role==='viewer'?'selected':''}>Vizualizare</option>
-              </select>
-            </div>
-            <div class="form-group full">
-              <label class="form-label">Culoare avatar</label>
-              <input class="form-input" id="user-color" type="color" value="${u.color||'#ff7a00'}" style="padding:4px 6px;height:38px"/>
-            </div>
-          </div>
-        </div>
-        <div class="modal-foot">
-          <button class="btn btn-ghost" onclick="closeModal()">Anulează</button>
-          <button class="btn btn-primary" onclick="saveUser(${id!=null?id:'null'})">Salvează</button>
-        </div>
-      `,'sm');
-    }
-
-    function saveUser(id){
-      const name = document.getElementById('user-name').value.trim();
-      const username = document.getElementById('user-username').value.trim();
-      const password = document.getElementById('user-password').value.trim();
-      const role = document.getElementById('user-role').value;
-      const color = document.getElementById('user-color').value;
-      if(!name || !username || !password){
-        toast('Completează numele, utilizatorul și parola','error');
-        return;
-      }
-      if(id==null){
-        const newId = users.reduce((m,u)=>Math.max(m,u.id),0)+1;
-        users.push({id:newId,name,username,password,role,color});
-      }else{
-        const idx = users.findIndex(u=>u.id===id);
-        if(idx>-1){
-          users[idx] = {...users[idx],name,username,password,role,color};
-          if(currentUser && currentUser.id===id){
-            currentUser = users[idx];
-            document.getElementById('user-name-small').textContent=currentUser.name;
-            document.getElementById('user-role-small').textContent=currentUser.role;
-            document.getElementById('user-avatar-small').textContent=currentUser.name[0];
-            document.getElementById('user-avatar-small').style.background=currentUser.color+'22';
-            document.getElementById('user-avatar-small').style.color=currentUser.color;
-          }
-        }
-      }
-      persist();
-      closeModal();
-      PAGE_RENDERERS.users();
-      toast('Utilizator salvat','success');
-    }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // PAGE: ACTIVITY LOG
-    // ═══════════════════════════════════════════════════════════════════
-    let actPage=1;
-    PAGE_RENDERERS.activity = function(p){
-      actPage=p||1;
-      const total=activityLog.length;
-      const pages=Math.max(1,Math.ceil(total/20));
-      actPage=Math.min(actPage,pages);
-      const slice=activityLog.slice((actPage-1)*20,actPage*20);
-
-      document.getElementById('content').innerHTML=`
-      <div class="section-head">
-        <h1>Activity Log</h1>
-        <span class="badge gray">${total} înregistrări</span>
-        ${isAdmin()?`<button class="btn btn-danger btn-sm" onclick="if(confirm('Ștergi tot jurnalul?')){activityLog=[];persist();PAGE_RENDERERS.activity()}">Șterge jurnal</button>`:''}
-      </div>
-      <div class="table-wrap">
-        <div class="table-scroll">
-          <table class="data-table">
-            <thead><tr><th>Dată/Ora</th><th>Utilizator</th><th>Acțiune</th><th>Detaliu</th></tr></thead>
-            <tbody>
-              ${slice.length===0?`<tr><td colspan="4"><div class="empty-state"><h3>Nu există activitate înregistrată</h3></div></td></tr>`
-              :slice.map(a=>`<tr>
-                <td class="mono" style="color:var(--text3);font-size:12px">${a.date}</td>
-                <td><span class="tag">${a.user}</span></td>
-                <td><span style="font-weight:600;font-size:13px">${a.action}</span></td>
-                <td style="color:var(--text2);font-size:13px">${a.detail}</td>
-              </tr>`).join('')}
-            </tbody>
-          </table>
-        </div>
-        ${renderPagination(actPage,pages,'PAGE_RENDERERS.activity')}
-      </div>`;
-    };
-
-    // ═══════════════════════════════════════════════════════════════════
-    // CATEGORIES MANAGEMENT (modal)
-    // ═══════════════════════════════════════════════════════════════════
-    function openCategoryManager(){
-      openModal(`
-      <div class="modal-head"><h2>Administrare categorii</h2><button class="btn btn-ghost btn-sm btn-icon" onclick="closeModal()">✕</button></div>
-      <div class="modal-body" id="cat-list">
-        ${categories.map((c,i)=>`<div style="display:flex;gap:8px;margin-bottom:8px">
-          <input class="form-input" value="${c}" style="flex:1" id="cat-${i}"/>
-          <button class="btn btn-danger btn-sm" onclick="removeCategory(${i})">${svgIcon('trash')}</button>
-        </div>`).join('')}
-        <div style="display:flex;gap:8px;margin-top:10px">
-          <input class="form-input" id="new-cat" placeholder="Nume categorie nouă..." style="flex:1"/>
-          <button class="btn btn-primary" onclick="addCategory()">Adaugă</button>
-        </div>
-      </div>
-      <div class="modal-foot">
-        <button class="btn btn-ghost" onclick="closeModal()">Anulează</button>
-        <button class="btn btn-primary" onclick="saveCategories()">Salvează</button>
-      </div>`);
-    }
-    function addCategory(){
-      const v=document.getElementById('new-cat').value.trim();
-      if(!v)return;
-      categories.push(v);persist();
-      openCategoryManager();
-    }
-    function removeCategory(i){ categories.splice(i,1);persist();openCategoryManager(); }
-    function saveCategories(){
-      const inputs=document.querySelectorAll('[id^="cat-"]');
-      inputs.forEach((el,i)=>{ if(el.value.trim()) categories[i]=el.value.trim(); });
-      persist();toast('Categorii salvate','success');closeModal();
-    }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // KEYBOARD SHORTCUTS
-    // ═══════════════════════════════════════════════════════════════════
-    document.addEventListener('keydown',e=>{
-      if(!currentUser)return;
-      if(e.altKey){
-        if(e.key==='d')navigate('dashboard');
-        if(e.key==='p')navigate('products');
-        if(e.key==='r')navigate('reception');
-        if(e.key==='s')navigate('scanner');
-      }
-      if(e.key==='Escape')closeModal();
-    });
-
-    // ═══════════════════════════════════════════════════════════════════
-    // STARTUP
-    // ═══════════════════════════════════════════════════════════════════
-    // Pre-focus login
-    document.getElementById('login-user').focus();
-    console.log('%cStockCommand', 'font-size:24px;font-weight:bold;color:#00e5ff');
-    console.log('Alt+D: Dashboard | Alt+P: Products | Alt+R: Reception | Alt+S: Scanner');
 </script>
 </body>
-
 </html>
